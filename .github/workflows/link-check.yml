@@ -22,5 +22,5 @@ jobs:
           concurrency: 1
           markdown: true
           retry: true
-          urlRewriteSearch: '/o/'
+          urlRewriteSearch: o
           urlRewriteReplace: 'org/'
