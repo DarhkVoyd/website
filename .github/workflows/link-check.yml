@@ -21,6 +21,6 @@ jobs:
           paths: 'pages/blog/posts/**/*.md'
           markdown: true
           retry: true
-          urlRewriteSearch: 'local'
-          urlRewriteReplace: a
+          urlRewriteSearch: 'w'
+          urlRewriteReplace: 'a'
           verbosity: DEBUG
