@@ -1,1 +1,1 @@
-hi
+<img src="http://www.google.com"/>
