@@ -20,6 +20,6 @@ jobs:
         with:
           paths: 'pages/blog/posts/applicability-json-schema-fundamentals-part-1.md'
           retry: true
-          urlRewriteSearch: '^(?!http)'
+          urlRewriteSearch: /o/
           urlRewriteReplace: cra
           verbosity: DEBUG
