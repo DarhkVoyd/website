@@ -21,4 +21,6 @@ jobs:
           paths: 'pages/blog/posts/**/*.md'
           markdown: true
           retry: true
+          urlRewriteSearch: http://localhost:37321/
+          urlRewriteReplace: https://json-schema.org/
           verbosity: DEBUG
