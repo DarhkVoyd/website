@@ -23,4 +23,4 @@ jobs:
           markdown: true
           retry: true
           urlRewriteSearch: o
-          urlRewriteReplace: 'org/'
+          urlRewriteReplace: a
