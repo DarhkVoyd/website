@@ -1,1 +1,1 @@
-<img src="http://www.google.com"/>
+<img src="https://www.google.com"/>
