@@ -19,8 +19,5 @@ jobs:
         uses: JustinBeckwith/linkinator-action@v1
         with:
           paths: 'pages/blog/posts/applicability-json-schema-fundamentals-part-1.md'
-          markdown: true
           retry: true
-          urlRewriteSearch: 'https://github.com/json-schema-org/website/blob/HEAD/'
-          urlRewriteReplace: ''
           verbosity: DEBUG
