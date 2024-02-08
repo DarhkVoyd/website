@@ -1,0 +1,26 @@
+name: Link Checker
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  linkinator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Validate Links in Markdown Files
+        uses: JustinBeckwith/linkinator-action@v1
+        with:
+          paths: 'pages/blog/posts/**/*.md'
+          concurrency: 1
+          markdown: true
+          retry: true
+          urlRewriteSearch: '^https'
+          urlRewriteReplace: 'https://json-schema.org/'
