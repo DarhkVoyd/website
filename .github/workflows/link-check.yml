@@ -19,6 +19,7 @@ jobs:
         uses: JustinBeckwith/linkinator-action@v1
         with:
           paths: 'pages/blog/posts/**/*.md'
+          markdown: true
           retry: true
           urlRewriteSearch: 'local'
           urlRewriteReplace: a
