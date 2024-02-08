@@ -22,4 +22,4 @@ jobs:
           markdown: true
           retry: true
           urlRewriteSearch: /
-          urlRewriteReplace: https://json-schema.org/
+          urlRewriteReplace: https\://json-schema.org/
