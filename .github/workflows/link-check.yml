@@ -18,7 +18,7 @@ jobs:
       - name: Validate Links in Markdown Files
         uses: JustinBeckwith/linkinator-action@v1
         with:
-          paths: 'pages/blog/posts/applicability-json-schema-fundamentals-part-1.md'
+          paths: 'pages/blog/posts/**/*.md'
           retry: true
           urlRewriteSearch: 'local'
           urlRewriteReplace: a
