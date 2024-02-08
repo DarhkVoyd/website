@@ -18,9 +18,8 @@ jobs:
       - name: Validate Links in Markdown Files
         uses: JustinBeckwith/linkinator-action@v1
         with:
-          paths: 'test.md'
-          concurrency: 1
+          paths: 'pages/blog/posts/**/*.md'
           markdown: true
           retry: true
-          urlRewriteSearch: o
-          urlRewriteReplace: a
+          urlRewriteSearch: ^/
+          urlRewriteReplace: https://json-schema.org/
