@@ -21,6 +21,6 @@ jobs:
           paths: 'pages/blog/posts/applicability-json-schema-fundamentals-part-1.md'
           markdown: true
           retry: true
-          urlRewriteSearch: http://localhost
-          urlRewriteReplace: https://json-schema.org/
+          urlRewriteSearch: 'https://github.com/json-schema-org/website/blob/HEAD/'
+          urlRewriteReplace: ''
           verbosity: DEBUG
