@@ -21,5 +21,4 @@ jobs:
           paths: 'pages/blog/posts/**/*.md'
           markdown: true
           retry: true
-          urlRewriteSearch: /
-          urlRewriteReplace: https\://json-schema.org/
+          verbosity: DEBUG
