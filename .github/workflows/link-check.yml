@@ -19,4 +19,4 @@ jobs:
         uses: lycheeverse/lychee-action@v1.9.0
         with:
           fail: true
-          args: --base . --verbose --no-progress 'pages/blog/posts/*.md' --debug true
+          args: --base . --verbose --no-progress -- --debug 'pages/blog/posts/*.md'
