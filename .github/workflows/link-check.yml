@@ -19,5 +19,4 @@ jobs:
         uses: lycheeverse/lychee-action@v1.9.0
         with:
           fail: true
-          args: --base https://json-schema.org --verbose --no-progress 'pages/blog/posts/*.md'
-          debug: true
+          args: --base https://json-schema.org/ --verbose --no-progress 'pages/blog/posts/*.md'
