@@ -48,4 +48,4 @@ jobs:
         uses: lycheeverse/lychee-action@v1.9.0
         with:
           fail: true
-          args: '--base http://127.0.0.1:3000 --verbose --no-progress **/*.md' 
+          args: '--base https://127.0.0.1:3000 --verbose --no-progress **/*.md' 
