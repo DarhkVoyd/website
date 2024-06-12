@@ -14,10 +14,10 @@ const getDocsPath = [
 ];
 
 export default function FilterSidebar({
-  setOpen,
+  setIsSidebarOpen,
 }: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (isSidebarOpen: boolean) => void;
 }) {
   const router = useRouter();
 
@@ -89,7 +89,7 @@ export default function FilterSidebar({
           <FilterCheckbox
             uri='/overview/what-is-jsonschema'
             label='What is JSON Schema?'
-            setOpen={setOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
           />
         </div>
       </div>

@@ -1,20 +1,20 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
-interface MobileFilterButtonProps {
+interface MobileSidebarButtonProps {
   toolingNumber: number;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function MobileFilterButton({
+export default function MobileSidebarButton({
   toolingNumber,
-  setOpen,
-}: MobileFilterButtonProps) {
+  setIsSidebarOpen,
+}: MobileSidebarButtonProps) {
   const [rotateChevron, setRotateChevron] = useState(false);
   const toggleRotate = () => setRotateChevron((prev) => !prev);
   const handleButtonClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     toggleRotate();
-    setOpen((prev) => !prev);
+    setIsSidebarOpen((prev) => !prev);
   };
   const rotate = rotateChevron ? 'rotate(180deg)' : 'rotate(0)';
 

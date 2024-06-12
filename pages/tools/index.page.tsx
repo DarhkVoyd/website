@@ -6,58 +6,73 @@ import { Headline1 } from '~/components/Headlines';
 import { SectionContext } from '~/context';
 import { getLayout } from '~/components/SiteLayout';
 import FilterSidebar from './FilterSidebar';
-import MobileFilterButton from './MobileFilterButton';
+import MobileSidebarButton from './MobileSidebarButton';
 
 export async function getStaticProps() {
-  const toolingsData = yaml.load(
+  const toolingData = yaml.load(
     fs.readFileSync('data/tooling-data.yaml', 'utf-8'),
   );
 
   return {
     props: {
-      toolingsData,
+      toolingData,
     },
   };
 }
 
-interface ToolingData {
+interface Tooling {
   name: string;
+  description: string;
+  toolingType: string[];
+  languages: string[];
+  license: string;
+  repositoryURL: string;
+  supportedDialects: {
+    draft: number[];
+  };
+  lastUpdated: string;
 }
 
 export default function ToolingPage({
-  toolingsData,
+  toolingData,
 }: {
-  toolingsData: ToolingData[];
+  toolingData: Tooling[];
 }) {
-  const [open, setOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <SectionContext.Provider value='tools'>
       <Head>
-        <title>JSON Schema Tooling</title>
+        <title>JSON Schema - Tools</title>
       </Head>
       <div className='max-w-[1400px] mx-auto flex flex-col items-center'>
         <section className='w-full'>
-          <MobileFilterButton
-            toolingNumber={toolingsData.length}
-            setOpen={setOpen}
+          <MobileSidebarButton
+            toolingNumber={toolingData.length}
+            setIsSidebarOpen={setIsSidebarOpen}
           />
 
           <div
-            className={`z-[150] absolute top-10 mt-24 left-0 h-full w-screen bg-white dark:bg-slate-900 dark:shadow-lg transform ${open ? '-translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out filter drop-shadow-md `}
+            className={`z-[150] absolute top-10 mt-24 left-0 h-full w-screen bg-white dark:bg-slate-900 dark:shadow-lg transform ${isSidebarOpen ? '-translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out filter drop-shadow-md `}
           >
             <div className='flex flex-col  dark:bg-slate-900'>
-              <FilterSidebar open={open} setOpen={setOpen} />
+              <FilterSidebar
+                isSidebarOpen={isSidebarOpen}
+                setIsSidebarOpen={setIsSidebarOpen}
+              />
             </div>
           </div>
 
           <div className='dark:bg-slate-800 max-w-[1400px] grid grid-cols-1 lg:grid-cols-4 mx-4 md:mx-12'>
             <div className='hidden lg:block mt-24'>
-              <FilterSidebar open={open} setOpen={setOpen} />
+              <FilterSidebar
+                isSidebarOpen={isSidebarOpen}
+                setIsSidebarOpen={setIsSidebarOpen}
+              />
             </div>
             <div className='col-span-4 md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
               <Headline1>JSON Schema Tooling</Headline1>
-              {toolingsData.map((toolingData, idx) => {
+              {toolingData.map((toolingData, idx) => {
                 return <div key={idx}>{toolingData.name}</div>;
               })}
             </div>
