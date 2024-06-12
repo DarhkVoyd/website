@@ -7,6 +7,7 @@ import { SectionContext } from '~/context';
 import { getLayout } from '~/components/SiteLayout';
 import FilterSidebar from './FilterSidebar';
 import MobileSidebarButton from './MobileSidebarButton';
+import ToolingTable from './ToolingTable';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
@@ -20,7 +21,7 @@ export async function getStaticProps() {
   };
 }
 
-interface Tooling {
+export interface Tooling {
   name: string;
   description: string;
   toolingType: string[];
@@ -72,9 +73,7 @@ export default function ToolingPage({
             </div>
             <div className='col-span-4 md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
               <Headline1>JSON Schema Tooling</Headline1>
-              {toolingData.map((toolingData, idx) => {
-                return <div key={idx}>{toolingData.name}</div>;
-              })}
+              <ToolingTable items={toolingData} />
             </div>
           </div>
         </section>
