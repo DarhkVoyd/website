@@ -1,16 +1,16 @@
 import React from 'react';
 import { type Tooling } from './index.page';
-import { Headline1 } from '~/components/Headlines';
+import { Headline2 } from '~/components/Headlines';
 
 const ToolingTable = ({ items }: { items: Tooling[] }) => {
   const sortedTooling = categoriseTooling(items);
   const categories = Object.keys(sortedTooling);
   return (
-    <div className='overflow-x-auto'>
+    <div>
       {categories.map((category) => {
         return (
           <div key={category}>
-            <Headline1>{category.split('-').join(' ')}</Headline1>
+            <Headline2>{toTitleCase(category.replace(/-/g, ' '))}</Headline2>
             <div>
               <table className='min-w-full bg-white border border-gray-200'>
                 <thead>
@@ -39,11 +39,10 @@ const ToolingTable = ({ items }: { items: Tooling[] }) => {
                         </div>
                       </td>
                       <td className='px-4 py-2 border-b border-gray-200'>
-                        {item.languages && item.languages.join(', ')}
+                        {item.languages?.join(', ')}
                       </td>
                       <td className='px-4 py-2 border-b border-gray-200'>
-                        {item.supportedDialects &&
-                          item.supportedDialects.draft.join(', ')}
+                        {item.supportedDialects?.draft.join(', ')}
                       </td>
                       <td className='px-4 py-2 border-b border-gray-200'>
                         {item.license}
@@ -78,6 +77,15 @@ function categoriseTooling(
   });
 
   return categorisedTooling;
+}
+
+function toTitleCase(str: string) {
+  return str
+    .split(' ')
+    .map(function (word: string) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
 }
 
 export default ToolingTable;
