@@ -2,11 +2,17 @@ import React from 'react';
 import { type Tooling } from './index.page';
 import { Headline2 } from '~/components/Headlines';
 
-const ToolingTable = ({ items }: { items: Tooling[] }) => {
-  const sortedTooling = categoriseTooling(items);
-  const categories = Object.keys(sortedTooling);
+const ToolingTable = ({
+  tools,
+  categoriseBy = 'toolingType',
+}: {
+  tools: Tooling[];
+  categoriseBy?: keyof Tooling;
+}) => {
+  const categorisedTooling = categoriseTooling(tools, categoriseBy);
+  const categories = Object.keys(categorisedTooling);
   return (
-    <div>
+    <>
       {categories.map((category) => {
         return (
           <section key={category} className='mb-12'>
@@ -30,7 +36,7 @@ const ToolingTable = ({ items }: { items: Tooling[] }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedTooling[category].map((item, index) => (
+                  {categorisedTooling[category].map((item, index) => (
                     <tr key={index} className='hover:bg-gray-100'>
                       <td className='px-4 py-2 border-b border-gray-200 relative group'>
                         {item.name}
@@ -57,14 +63,11 @@ const ToolingTable = ({ items }: { items: Tooling[] }) => {
           </section>
         );
       })}
-    </div>
+    </>
   );
 };
 
-function categoriseTooling(
-  tools: Tooling[],
-  categoriseBy: keyof Tooling = 'toolingType',
-) {
+function categoriseTooling(tools: Tooling[], categoriseBy: keyof Tooling) {
   const categorisedTooling: { [key: string]: Tooling[] } = {};
 
   tools.forEach((tool: Tooling) => {
