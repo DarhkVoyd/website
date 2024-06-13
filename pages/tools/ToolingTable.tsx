@@ -9,7 +9,7 @@ const ToolingTable = ({ items }: { items: Tooling[] }) => {
     <div>
       {categories.map((category) => {
         return (
-          <div key={category}>
+          <section key={category}>
             <Headline2>{toTitleCase(category.replace(/-/g, ' '))}</Headline2>
             <div>
               <table className='min-w-full bg-white border border-gray-200'>
@@ -52,7 +52,7 @@ const ToolingTable = ({ items }: { items: Tooling[] }) => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </section>
         );
       })}
     </div>

@@ -1,17 +1,17 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
-interface MobileSidebarButtonProps {
+interface MobileToggleSidebarButtonProps {
   toolingNumber: number;
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function MobileSidebarButton({
+export default function MobileToggleSidebarButton({
   toolingNumber,
   setIsSidebarOpen,
-}: MobileSidebarButtonProps) {
+}: MobileToggleSidebarButtonProps) {
   const [rotateChevron, setRotateChevron] = useState(false);
   const toggleRotate = () => setRotateChevron((prev) => !prev);
-  const handleButtonClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const toggleSidebar = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     toggleRotate();
     setIsSidebarOpen((prev) => !prev);
@@ -19,13 +19,12 @@ export default function MobileSidebarButton({
   const rotate = rotateChevron ? 'rotate(180deg)' : 'rotate(0)';
 
   return (
-    <div className='bg-primary dark:bg-slate-900 w-full h-12 mt-[4.5rem] z-150 flex relative flex-col justify-center items-center lg:hidden'>
+    <div className='bg-primary w-full h-12 mt-[4.5rem] relative lg:hidden'>
       <div
-        className='z-[150] flex w-full bg-primary dark:bg-slate-900 justify-between items-center'
-        onMouseDown={(e) => e.stopPropagation()}
-        onClick={handleButtonClick}
+        className='px-8 w-full h-full flex justify-between items-center'
+        onClick={toggleSidebar}
       >
-        <h3 className='text-white ml-12'>{toolingNumber} Tools</h3>
+        <h3 className='text-white'>{toolingNumber} Tools</h3>
 
         <svg
           style={{
