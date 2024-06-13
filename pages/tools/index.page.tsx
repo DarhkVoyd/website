@@ -9,15 +9,22 @@ import FilterSidebar from './FilterSidebar';
 import MobileToggleSidebarButton from './MobileToggleSidebarButton';
 import ToolingTable from './ToolingTable';
 import classnames from 'classnames';
+import StyledMarkdown from '~/components/StyledMarkdown';
+import matter from 'gray-matter';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
     fs.readFileSync('data/tooling-data.yaml', 'utf-8'),
   );
+  const intro = fs.readFileSync('pages/tools/content/intro.md', 'utf-8');
+  const { content: introContent } = matter(intro);
 
   return {
     props: {
       toolingData,
+      content: {
+        intro: introContent,
+      },
     },
   };
 }
@@ -37,8 +44,10 @@ export interface Tooling {
 
 export default function ToolingPage({
   toolingData,
+  content,
 }: {
   toolingData: Tooling[];
+  content: Record<string, string>;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -63,6 +72,7 @@ export default function ToolingPage({
             </div>
             <div className='md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
               <Headline1>JSON Schema Tooling</Headline1>
+              <StyledMarkdown markdown={content.intro} />
               <ToolingTable items={toolingData} />
             </div>
           </div>
