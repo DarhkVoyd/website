@@ -64,11 +64,10 @@ export default function ToolingPage({
           />
 
           <div className='grid grid-cols-1 lg:grid-cols-4 mx-4 md:mx-12'>
-            <div className={classnames('lg:mt-24')}>
-              <FilterSidebar
-                isSidebarOpen={isSidebarOpen}
-                setIsSidebarOpen={setIsSidebarOpen}
-              />
+            <div
+              className={`absolute lg:static top-10 lg:top-auto left-0 lg:left-auto mt-24 w-screen lg:w-auto h-full lg:h-auto bg-white lg:bg-transparent transition-transform lg:transform-none duration-300 lg:duration-0 ease-in-out ${isSidebarOpen ? '-translate-x-0' : '-translate-x-full'} z-50`}
+            >
+              <FilterSidebar />
             </div>
             <div className='md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
               <Headline1>JSON Schema Tooling</Headline1>

@@ -13,12 +13,7 @@ const getDocsPath = [
   '/overview/code-of-conduct',
 ];
 
-export default function FilterSidebar({
-  setIsSidebarOpen,
-}: {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: (isSidebarOpen: boolean) => void;
-}) {
+export default function FilterSidebar() {
   const router = useRouter();
 
   /* eslint-disable no-constant-condition */
@@ -89,7 +84,6 @@ export default function FilterSidebar({
           <FilterCheckbox
             uri='/overview/what-is-jsonschema'
             label='What is JSON Schema?'
-            setIsSidebarOpen={setIsSidebarOpen}
           />
         </div>
       </div>

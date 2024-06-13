@@ -9,7 +9,6 @@ export default function FilterCheckbox({
   uri,
   label,
   onClick,
-  setOpen,
 }: {
   uri: string;
   label: string | React.ReactNode;
@@ -28,7 +27,6 @@ export default function FilterCheckbox({
       className={classnames('text-sm block py-1 pl-2 font-medium')}
       onClick={() => {
         if (onClick) onClick();
-        setOpen(false);
       }}
     >
       {label}
