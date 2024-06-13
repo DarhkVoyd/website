@@ -9,8 +9,10 @@ const ToolingTable = ({ items }: { items: Tooling[] }) => {
     <div>
       {categories.map((category) => {
         return (
-          <section key={category}>
-            <Headline2>{toTitleCase(category.replace(/-/g, ' '))}</Headline2>
+          <section key={category} className='mb-12'>
+            <div className='my-10 px-4 w-full bg-gray-100'>
+              <Headline2>{toTitleCase(category.replace(/-/g, ' '))}</Headline2>
+            </div>
             <div>
               <table className='min-w-full bg-white border border-gray-200'>
                 <thead>
