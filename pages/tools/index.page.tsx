@@ -34,6 +34,7 @@ export interface Tooling {
   languages: string[];
   license: string;
   repositoryURL: string;
+  homepageURL: string;
   supportedDialects: {
     draft: number[];
   };

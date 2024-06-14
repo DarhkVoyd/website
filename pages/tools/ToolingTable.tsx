@@ -1,6 +1,7 @@
 import React from 'react';
 import { type Tooling } from './index.page';
 import { Headline2 } from '~/components/Headlines';
+import Link from 'next/link';
 
 const ToolingTable = ({
   tools,
@@ -15,7 +16,7 @@ const ToolingTable = ({
     <>
       {categories.map((category) => {
         return (
-          <section key={category} className='mb-12'>
+          <section key={category} className='mb-12 text-left'>
             <div className='my-10 px-4 w-full bg-gray-100'>
               <Headline2>{toTitleCase(category.replace(/-/g, ' '))}</Headline2>
             </div>
@@ -39,7 +40,11 @@ const ToolingTable = ({
                   {categorisedTooling[category].map((item, index) => (
                     <tr key={index} className='hover:bg-gray-100'>
                       <td className='px-4 py-2 border-b border-gray-200 relative group'>
-                        {item.name}
+                        <Link
+                          href={`${item.repositoryURL ?? item.homepageURL}`}
+                        >
+                          {item.name}
+                        </Link>
                         <div className='absolute left-0 top-full mt-2 w-64 p-4 bg-white border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10'>
                           <p className='text-sm text-gray-700'>
                             {item.description}
