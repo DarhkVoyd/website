@@ -58,7 +58,7 @@ export default function ToolingPage({
       <Head>
         <title>JSON Schema - Tools</title>
       </Head>
-      <div className='mx-auto w-full max-w-[1400px] flex flex-col items-center'>
+      <div className='mx-auto w-full max-w-[1400px] min-h-screen flex flex-col items-center'>
         <div
           className='bg-primary w-full h-12 mt-[4.5rem] relative lg:hidden px-8 flex justify-between items-center'
           onClick={() => {
