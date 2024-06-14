@@ -48,6 +48,8 @@ export default function ToolingPage({
   toolingData: Tooling[];
   content: Record<string, string>;
 }) {
+  const [filteredToolingData, setFilteredToolingData] =
+    useState<Tooling[]>(toolingData);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [categoriseBy, setCategoriseBy] =
     useState<keyof Tooling>('toolingType');
@@ -86,6 +88,8 @@ export default function ToolingPage({
             className={`absolute lg:static top-10 lg:top-auto left-0 lg:left-auto mt-24 w-screen lg:w-auto h-full lg:h-auto bg-white lg:bg-transparent transition-transform lg:transform-none duration-300 lg:duration-0 ease-in-out ${isSidebarOpen ? '-translate-x-0' : '-translate-x-full'} z-50`}
           >
             <Sidebar
+              toolingData={toolingData}
+              setFilteredToolingData={setFilteredToolingData}
               categoriseBy={categoriseBy}
               setCategoriseBy={setCategoriseBy}
             />
@@ -93,7 +97,10 @@ export default function ToolingPage({
           <main className='md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
             <Headline1>JSON Schema Tooling</Headline1>
             <StyledMarkdown markdown={content.intro} />
-            <ToolingTable tools={toolingData} categoriseBy={categoriseBy} />
+            <ToolingTable
+              tools={filteredToolingData}
+              categoriseBy={categoriseBy}
+            />
           </main>
         </div>
       </div>
