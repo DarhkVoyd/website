@@ -87,6 +87,13 @@ export default function ToolingPage({
           <div
             className={`absolute lg:static top-10 lg:top-auto left-0 lg:left-auto mt-24 w-screen lg:w-auto h-full lg:h-auto bg-white lg:bg-transparent transition-transform lg:transform-none duration-300 lg:duration-0 ease-in-out ${isSidebarOpen ? '-translate-x-0' : '-translate-x-full'} z-50`}
           >
+            <h1 className='text-h1mobile md:text-h1 font-bold lg:ml-4 lg:mt-6'>
+              {toolingData.length.toString()}
+            </h1>
+            <div className='text-xl text-slate-900 font-bold lg:ml-6'>
+              Tools
+            </div>
+
             <Sidebar
               toolingData={toolingData}
               setFilteredToolingData={setFilteredToolingData}
