@@ -1,21 +1,15 @@
 import classnames from 'classnames';
-import React, { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
-import { SegmentHeadline } from '~/components/Layout';
-import Radio from './Radio';
-import { Tooling } from '../index.page';
+import React, { ReactNode, useState } from 'react';
 
-export default function FilterByCategory({
-  categoriseBy,
-  setCategoriseBy,
+export default function FilterMenu({
+  children,
+  label,
 }: {
-  categoriseBy: keyof Tooling;
-  setCategoriseBy: Dispatch<SetStateAction<keyof Tooling>>;
+  children: ReactNode;
+  label: string;
 }) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCategoriseBy(event.target.value as keyof Tooling);
-  };
   return (
     <div className='my-2 bg-slate-200 p-2 rounded'>
       <div
@@ -25,7 +19,7 @@ export default function FilterByCategory({
         }}
       >
         <img src='/icons/filter.svg' alt='eye icon' className='mr-2' />
-        <SegmentHeadline label='Categorise By' />
+        <div className='text-slate-900 font-bold mr-auto'>{label}</div>
         <svg
           style={{
             transform: `${isFilterOpen ? 'rotate(180deg)' : 'rotate(0)'}`,
@@ -48,19 +42,8 @@ export default function FilterByCategory({
         </svg>
       </div>
 
-      <div className={classnames('ml-6', { hidden: !isFilterOpen })}>
-        <Radio
-          label='Tooling Type'
-          value='toolingType'
-          selectedValue={categoriseBy}
-          onChange={handleChange}
-        />
-        <Radio
-          label='Language'
-          value='languages'
-          selectedValue={categoriseBy}
-          onChange={handleChange}
-        />
+      <div className={classnames('ml-0 mt-4', { hidden: !isFilterOpen })}>
+        {children}
       </div>
     </div>
   );
