@@ -97,6 +97,16 @@ export default function ToolingPage({
           <main className='md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
             <Headline1>JSON Schema Tooling</Headline1>
             <StyledMarkdown markdown={content.intro} />
+            <div className='w-full grid grid-cols-1 lg:grid-cols-2'>
+              <div>
+                Raise an issue and we'll add your tool to the data we use to
+                build this website
+              </div>
+              <div>
+                Bowtie is a meta-validator for JSON Schema, coordinating and
+                reporting results from other validators.
+              </div>
+            </div>
             <ToolingTable
               tools={filteredToolingData}
               categoriseBy={categoriseBy}
