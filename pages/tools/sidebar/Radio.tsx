@@ -12,15 +12,21 @@ export default function Radio({
   onChange: ChangeEventHandler<HTMLInputElement>;
 }) {
   return (
-    <label>
-      {label}
+    <label className='flex items-center gap-3 px-4 py-2'>
       <input
         type='radio'
         value={value}
         checked={selectedValue === value}
-        className='text-sm block py-1 pl-2 font-medium'
         onChange={onChange}
+        className='hidden'
+        id={value}
       />
+      <span className='w-4 h-4 inline-block rounded-full border-2 border-gray-300 flex-shrink-0 relative'>
+        <span
+          className={`w-2 h-2 bg-blue-600 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-200 ${selectedValue === value ? 'opacity-100' : 'opacity-0'}`}
+        ></span>
+      </span>
+      <span className='text-gray-700 font-medium'>{label}</span>
     </label>
   );
 }
