@@ -34,7 +34,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className='w-full max-w-md mx-auto'>
+    <div className='w-full max-w-md mx-auto my-6 lg:my-auto'>
       <div className='relative'>
         <input
           type='text'
