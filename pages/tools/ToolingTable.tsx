@@ -89,7 +89,7 @@ function categoriseTooling(tools: Tooling[], categoriseBy: keyof Tooling) {
   return categorisedTooling;
 }
 
-function toTitleCase(str: string) {
+export function toTitleCase(str: string) {
   return str
     .split(' ')
     .map(function (word: string) {

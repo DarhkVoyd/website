@@ -3,13 +3,18 @@ import { type Tooling } from '../index.page';
 import FilterMenu from './FilterMenu';
 import Radio from './Radio';
 import SearchBar from './SearchBar';
+import { type DataDomains } from '../collectDataDomains';
+import { toTitleCase } from '../ToolingTable';
+import Checkbox from './Checkbox';
 
 export default function FilterSidebar({
+  dataDomains,
   toolingData,
   setFilteredToolingData,
   categoriseBy,
   setCategoriseBy,
 }: {
+  dataDomains: DataDomains;
   toolingData: Tooling[];
   setFilteredToolingData: Dispatch<SetStateAction<Tooling[]>>;
   categoriseBy: keyof Tooling;
@@ -39,48 +44,20 @@ export default function FilterSidebar({
           onChange={handleChange}
         />
       </FilterMenu>
-      <FilterMenu label='Draft'>
-        <Radio
-          label='Tooling Type'
-          value='toolingType'
-          selectedValue={categoriseBy}
-          onChange={handleChange}
-        />
-        <Radio
-          label='Language'
-          value='languages'
-          selectedValue={categoriseBy}
-          onChange={handleChange}
-        />
-      </FilterMenu>
-      <FilterMenu label='Language'>
-        <Radio
-          label='Tooling Type'
-          value='toolingType'
-          selectedValue={categoriseBy}
-          onChange={handleChange}
-        />
-        <Radio
-          label='Language'
-          value='languages'
-          selectedValue={categoriseBy}
-          onChange={handleChange}
-        />
-      </FilterMenu>
-      <FilterMenu label='License'>
-        <Radio
-          label='Tooling Type'
-          value='toolingType'
-          selectedValue={categoriseBy}
-          onChange={handleChange}
-        />
-        <Radio
-          label='Language'
-          value='languages'
-          selectedValue={categoriseBy}
-          onChange={handleChange}
-        />
-      </FilterMenu>
+      {Object.keys(dataDomains).map((field) => {
+        const domain = field as keyof DataDomains;
+        return (
+          <FilterMenu key={field} label={toTitleCase(field)}>
+            {dataDomains[domain]!.map((dataDomainValue: string) => (
+              <Checkbox
+                key={dataDomainValue}
+                label={dataDomainValue}
+                value={dataDomainValue}
+              />
+            ))}
+          </FilterMenu>
+        );
+      })}
     </div>
   );
 }

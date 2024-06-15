@@ -9,17 +9,28 @@ import Sidebar from './sidebar/';
 import ToolingTable from './ToolingTable';
 import StyledMarkdown from '~/components/StyledMarkdown';
 import matter from 'gray-matter';
+import { DRAFT_ORDER } from '~/lib/config';
+import collectDataDomains, { type DataDomains } from './collectDataDomains';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
     fs.readFileSync('data/tooling-data.yaml', 'utf-8'),
-  );
+  ) as Tooling[];
   const intro = fs.readFileSync('pages/tools/content/intro.md', 'utf-8');
   const { content: introContent } = matter(intro);
+
+  const supportedDialectDrafts = DRAFT_ORDER.map(String);
+  const dataDomains = collectDataDomains(
+    toolingData,
+    'languages',
+    'license',
+  ) as DataDomains;
+  dataDomains.drafts = supportedDialectDrafts as Array<string>;
 
   return {
     props: {
       toolingData,
+      dataDomains,
       content: {
         intro: introContent,
       },
@@ -36,16 +47,18 @@ export interface Tooling {
   repositoryURL: string;
   homepageURL: string;
   supportedDialects: {
-    draft: number[];
+    draft: string[];
   };
   lastUpdated: string;
 }
 
 export default function ToolingPage({
   toolingData,
+  dataDomains,
   content,
 }: {
   toolingData: Tooling[];
+  dataDomains: DataDomains;
   content: Record<string, string>;
 }) {
   const [filteredToolingData, setFilteredToolingData] =
@@ -95,8 +108,8 @@ export default function ToolingPage({
                 Tools
               </div>
             </div>
-
             <Sidebar
+              dataDomains={dataDomains}
               toolingData={toolingData}
               setFilteredToolingData={setFilteredToolingData}
               categoriseBy={categoriseBy}
