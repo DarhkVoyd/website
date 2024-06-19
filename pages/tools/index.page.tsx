@@ -78,7 +78,7 @@ export default function ToolingPage({
             setIsSidebarOpen((prev) => !prev);
           }}
         >
-          <h3 className='text-white'>{toolingData.length} Tools</h3>
+          <h3 className='text-white'>{filteredToolingData.length} Tools</h3>
 
           <svg
             style={{
@@ -102,7 +102,7 @@ export default function ToolingPage({
           >
             <div className='hidden lg:block'>
               <h1 className='text-h1mobile md:text-h1 font-bold lg:ml-4 lg:mt-6'>
-                {toolingData.length.toString()}
+                {filteredToolingData.length.toString()}
               </h1>
               <div className='text-xl text-slate-900 font-bold lg:ml-6'>
                 Tools
