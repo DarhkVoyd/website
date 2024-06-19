@@ -10,8 +10,7 @@ const ToolingTable = ({
   tools: Tooling[];
   viewBy?: keyof Tooling;
 }) => {
-  const categorisedTooling = categoriseTooling(tools, viewBy);
-  const categories = Object.keys(categorisedTooling);
+  const categories = Object.keys(tools);
   return (
     <>
       {categories.map((category) => {
@@ -37,7 +36,7 @@ const ToolingTable = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {categorisedTooling[category].map((item, index) => (
+                  {tools[category].map((item, index) => (
                     <tr key={index} className='hover:bg-gray-100'>
                       <td className='px-4 py-2 border-b border-gray-200 relative group'>
                         <Link
