@@ -1,5 +1,5 @@
 import React, { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { type Tooling } from '../index.page';
+import { Preferences, type Tooling } from '../index.page';
 import FilterMenu from './FilterMenu';
 import Radio from './Radio';
 import SearchBar from './SearchBar';
@@ -9,38 +9,33 @@ import Checkbox from './Checkbox';
 
 export default function FilterSidebar({
   dataDomains,
-  toolingData,
-  setFilteredToolingData,
-  categoriseBy,
-  setCategoriseBy,
+  preferences,
+  setPreferences,
 }: {
   dataDomains: DataDomains;
-  toolingData: Tooling[];
-  setFilteredToolingData: Dispatch<SetStateAction<Tooling[]>>;
-  categoriseBy: keyof Tooling;
-  setCategoriseBy: Dispatch<SetStateAction<keyof Tooling>>;
+  preferences: Preferences;
+  setPreferences: Dispatch<SetStateAction<Preferences>>;
 }) {
+  function setViewBy() {}
+  const viewBy = 'toolingType';
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCategoriseBy(event.target.value as keyof Tooling);
+    setViewBy(event.target.value as keyof Tooling);
   };
 
   return (
     <div className='sticky top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5'>
-      <SearchBar
-        toolingData={toolingData}
-        setFilteredToolingData={setFilteredToolingData}
-      />
+      <SearchBar preferences={preferences} setPreferences={setPreferences} />
       <FilterMenu label='View'>
         <Radio
           label='Tooling Type'
           value='toolingType'
-          selectedValue={categoriseBy}
+          selectedValue={viewBy}
           onChange={handleChange}
         />
         <Radio
           label='Language'
           value='languages'
-          selectedValue={categoriseBy}
+          selectedValue={viewBy}
           onChange={handleChange}
         />
       </FilterMenu>

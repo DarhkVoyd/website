@@ -1,36 +1,18 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import Fuse from 'fuse.js';
-import { Tooling } from '../index.page';
+import React, { Dispatch, SetStateAction } from 'react';
+import { Preferences } from '../index.page';
 
 interface SearchBarProps {
-  toolingData: Tooling[];
-  setFilteredToolingData: Dispatch<SetStateAction<Tooling[]>>;
+  preferences: Preferences;
+  setPreferences: Dispatch<SetStateAction<Preferences>>;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({
-  toolingData,
-  setFilteredToolingData,
-}) => {
-  const [query, setQuery] = useState('');
-
-  const fuse = new Fuse(toolingData, {
-    keys: ['name'],
-    includeScore: true,
-    threshold: 0.3, // Adjust the threshold for fuzziness
-  });
-
+const SearchBar = ({ preferences, setPreferences }: SearchBarProps) => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
-    setQuery(searchQuery);
-
-    if (searchQuery.trim() === '') {
-      setFilteredToolingData(toolingData);
-    } else {
-      const searchResults = fuse
-        .search(searchQuery)
-        .map((result) => result.item);
-      setFilteredToolingData(searchResults);
-    }
+    setPreferences((prev: Preferences) => ({
+      ...prev,
+      query: searchQuery,
+    }));
   };
 
   return (
@@ -40,7 +22,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           type='text'
           className='w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300'
           placeholder='Search'
-          value={query}
+          value={preferences.query}
           onChange={handleSearch}
         />
       </div>

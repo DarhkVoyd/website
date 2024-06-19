@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import fs from 'fs';
 import Head from 'next/head';
 import yaml from 'js-yaml';
@@ -9,6 +9,7 @@ import Sidebar from './sidebar/';
 import ToolingTable from './ToolingTable';
 import StyledMarkdown from '~/components/StyledMarkdown';
 import matter from 'gray-matter';
+import Fuse from 'fuse.js';
 import { DRAFT_ORDER } from '~/lib/config';
 import collectDataDomains, { type DataDomains } from './collectDataDomains';
 
@@ -52,6 +53,15 @@ export interface Tooling {
   lastUpdated: string;
 }
 
+export interface Preferences {
+  query: string;
+  viewBy: 'all' | 'toolingType' | 'languages';
+  sortBy: 'none' | 'name' | 'languages' | 'drafts' | 'license';
+  languages: string[] | null;
+  licenses: string[] | null;
+  drafts: string[] | null;
+}
+
 export default function ToolingPage({
   toolingData,
   dataDomains,
@@ -61,11 +71,11 @@ export default function ToolingPage({
   dataDomains: DataDomains;
   content: Record<string, string>;
 }) {
-  const [filteredToolingData, setFilteredToolingData] =
-    useState<Tooling[]>(toolingData);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [categoriseBy, setCategoriseBy] =
-    useState<keyof Tooling>('toolingType');
+
+  const [preferredData, preferences, setPreferences] =
+    usePreferences(toolingData);
+
   return (
     <SectionContext.Provider value='tools'>
       <Head>
@@ -78,7 +88,7 @@ export default function ToolingPage({
             setIsSidebarOpen((prev) => !prev);
           }}
         >
-          <h3 className='text-white'>{filteredToolingData.length} Tools</h3>
+          <h3 className='text-white'>{preferredData.length} Tools</h3>
 
           <svg
             style={{
@@ -102,7 +112,7 @@ export default function ToolingPage({
           >
             <div className='hidden lg:block'>
               <h1 className='text-h1mobile md:text-h1 font-bold lg:ml-4 lg:mt-6'>
-                {filteredToolingData.length.toString()}
+                {preferredData.length.toString()}
               </h1>
               <div className='text-xl text-slate-900 font-bold lg:ml-6'>
                 Tools
@@ -110,12 +120,11 @@ export default function ToolingPage({
             </div>
             <Sidebar
               dataDomains={dataDomains}
-              toolingData={toolingData}
-              setFilteredToolingData={setFilteredToolingData}
-              categoriseBy={categoriseBy}
-              setCategoriseBy={setCategoriseBy}
+              preferences={preferences}
+              setPreferences={setPreferences}
             />
           </div>
+
           <main className='md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
             <Headline1>JSON Schema Tooling</Headline1>
             <StyledMarkdown markdown={content.intro} />
@@ -129,10 +138,7 @@ export default function ToolingPage({
                 reporting results from other validators.
               </div>
             </div>
-            <ToolingTable
-              tools={filteredToolingData}
-              categoriseBy={categoriseBy}
-            />
+            <ToolingTable tools={preferredData} viewBy='toolingType' />
           </main>
         </div>
       </div>
@@ -141,3 +147,49 @@ export default function ToolingPage({
 }
 
 ToolingPage.getLayout = getLayout;
+
+function usePreferences(tools: Tooling[]) {
+  const preferredData: { [key: string]: Tooling[] } = {};
+  const [preferences, setPreferences] = useState<Preferences>({
+    query: '',
+    viewBy: 'toolingType',
+    sortBy: 'none',
+    languages: null,
+    licenses: null,
+    drafts: null,
+  });
+
+  const fuse = useMemo(
+    () =>
+      new Fuse(tools, {
+        keys: ['name'],
+        includeScore: true,
+        threshold: 0.3,
+      }),
+    [tools],
+  );
+
+  const hits = useMemo(() => {
+    if (preferences.query.trim() === '') {
+      return tools;
+    } else {
+      const searchResults = fuse
+        .search(preferences.query)
+        .map((result) => result.item);
+      return searchResults;
+    }
+  }, [fuse, preferences.query]);
+
+  tools.forEach((tool: Tooling) => {
+    if (Array.isArray(tool[preferences.viewBy])) {
+      (tool[preferences.viewBy] as string[]).forEach((category: string) => {
+        if (!preferredData[category]) {
+          preferredData[category] = [];
+        }
+        preferredData[category].push(tool);
+      });
+    }
+  });
+
+  return [hits, preferences, setPreferences];
+}

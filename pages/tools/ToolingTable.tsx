@@ -5,12 +5,12 @@ import Link from 'next/link';
 
 const ToolingTable = ({
   tools,
-  categoriseBy = 'toolingType',
+  viewBy = 'toolingType',
 }: {
   tools: Tooling[];
-  categoriseBy?: keyof Tooling;
+  viewBy?: keyof Tooling;
 }) => {
-  const categorisedTooling = categoriseTooling(tools, categoriseBy);
+  const categorisedTooling = categoriseTooling(tools, viewBy);
   const categories = Object.keys(categorisedTooling);
   return (
     <>
@@ -72,12 +72,12 @@ const ToolingTable = ({
   );
 };
 
-function categoriseTooling(tools: Tooling[], categoriseBy: keyof Tooling) {
+function categoriseTooling(tools: Tooling[], viewBy: keyof Tooling) {
   const categorisedTooling: { [key: string]: Tooling[] } = {};
 
   tools.forEach((tool: Tooling) => {
-    if (Array.isArray(tool[categoriseBy])) {
-      (tool[categoriseBy] as string[]).forEach((category: string) => {
+    if (Array.isArray(tool[viewBy])) {
+      (tool[viewBy] as string[]).forEach((category: string) => {
         if (!categorisedTooling[category]) {
           categorisedTooling[category] = [];
         }
