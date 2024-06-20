@@ -39,9 +39,7 @@ const ToolingTable = ({
                   {tools[category].map((item, index) => (
                     <tr key={index} className='hover:bg-gray-100'>
                       <td className='px-4 py-2 border-b border-gray-200 relative group'>
-                        <Link
-                          href={`${item.repositoryURL ?? item.homepageURL}`}
-                        >
+                        <Link href={`${item.source ?? item.homepage}`}>
                           {item.name}
                         </Link>
                         <div className='absolute left-0 top-full mt-2 w-64 p-4 bg-white border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10'>
