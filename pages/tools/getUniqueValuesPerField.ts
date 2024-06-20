@@ -6,25 +6,17 @@ export interface Exclusions {
   [key: string]: Set<string>;
 }
 
+export type UniqueValuesPerField = Partial<Record<Fields, string[]>>;
+
 const getFieldValue = (obj: any, path: string): any => {
   return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-};
-
-const setFieldValue = (obj: any, path: string, value: any): void => {
-  const parts = path.split('.');
-  const last = parts.pop()!;
-  const target = parts.reduce((acc, part) => {
-    if (!acc[part]) acc[part] = {};
-    return acc[part];
-  }, obj);
-  target[last] = value;
 };
 
 const getUniqueValuesPerField = (
   data: Tooling[],
   fields: Fields[],
   exclusions: Exclusions = {},
-) => {
+): UniqueValuesPerField => {
   const uniqueValuesPerField: { [key: string]: Set<string> } = {};
 
   fields.forEach((field) => {
@@ -54,12 +46,12 @@ const getUniqueValuesPerField = (
     });
   });
 
-  const result: any = {};
+  const result: UniqueValuesPerField = {};
   fields.forEach((field) => {
     const sortedArray = Array.from(uniqueValuesPerField[field]).sort((a, b) =>
       a.localeCompare(b),
     );
-    setFieldValue(result, field, sortedArray);
+    result[field] = sortedArray;
   });
 
   return result;

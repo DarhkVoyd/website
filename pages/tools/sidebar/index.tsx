@@ -3,16 +3,16 @@ import { Preferences, type Tooling } from '../index.page';
 import FilterMenu from './FilterMenu';
 import Radio from './Radio';
 import SearchBar from './SearchBar';
-import { type DataDomains } from '../collectDataDomains';
 import { toTitleCase } from '../ToolingTable';
 import Checkbox from './Checkbox';
+import { Fields, UniqueValuesPerField } from '../getUniqueValuesPerField';
 
 export default function FilterSidebar({
-  dataDomains,
+  uniqueValuesPerField,
   preferences,
   setPreferences,
 }: {
-  dataDomains: DataDomains;
+  uniqueValuesPerField: UniqueValuesPerField;
   preferences: Preferences;
   setPreferences: Dispatch<SetStateAction<Preferences>>;
 }) {
@@ -39,17 +39,19 @@ export default function FilterSidebar({
           onChange={handleChange}
         />
       </FilterMenu>
-      {Object.keys(dataDomains).map((field) => {
-        const domain = field as keyof DataDomains;
+      {Object.keys(uniqueValuesPerField).map((field) => {
+        const values = uniqueValuesPerField[field as Fields];
+        const label = field.split('.').pop();
         return (
-          <FilterMenu key={field} label={toTitleCase(field)}>
-            {dataDomains[domain]!.map((dataDomainValue: string) => (
-              <Checkbox
-                key={dataDomainValue}
-                label={dataDomainValue}
-                value={dataDomainValue}
-              />
-            ))}
+          <FilterMenu key={field} label={toTitleCase(label!)}>
+            {values &&
+              values.map((uniqueValue) => (
+                <Checkbox
+                  key={uniqueValue}
+                  label={uniqueValue}
+                  value={uniqueValue}
+                />
+              ))}
           </FilterMenu>
         );
       })}

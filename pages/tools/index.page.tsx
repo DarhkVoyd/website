@@ -11,7 +11,9 @@ import StyledMarkdown from '~/components/StyledMarkdown';
 import matter from 'gray-matter';
 import Fuse from 'fuse.js';
 import { DRAFT_ORDER } from '~/lib/config';
-import getUniqueValuesPerField, { Exclusions } from './getUniqueValuesPerField';
+import getUniqueValuesPerField, {
+  UniqueValuesPerField,
+} from './getUniqueValuesPerField';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
@@ -20,21 +22,21 @@ export async function getStaticProps() {
 
   const intro = fs.readFileSync('pages/tools/content/intro.md', 'utf-8');
   const { content: introContent } = matter(intro);
-  const exclusions: Exclusions = {
+
+  const exclusions = {
     'supportedDialects.draft': new Set(['1', '2', '3']),
-    license: new Set(['GPL-3.0']),
   };
-  const dataDomains = getUniqueValuesPerField(
+
+  const uniqueValuesPerField = getUniqueValuesPerField(
     toolingData,
     ['license', 'supportedDialects.draft', 'languages'],
     exclusions,
   );
-  console.log(dataDomains);
 
   return {
     props: {
       toolingData,
-      dataDomains,
+      uniqueValuesPerField,
       content: {
         intro: introContent,
       },
@@ -67,11 +69,11 @@ export interface Preferences {
 
 export default function ToolingPage({
   toolingData,
-  dataDomains,
+  uniqueValuesPerField,
   content,
 }: {
   toolingData: Tooling[];
-  dataDomains: DataDomains;
+  uniqueValuesPerField: UniqueValuesPerField;
   content: Record<string, string>;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -122,7 +124,7 @@ export default function ToolingPage({
               </div>
             </div>
             <Sidebar
-              dataDomains={dataDomains}
+              uniqueValuesPerField={uniqueValuesPerField}
               preferences={preferences}
               setPreferences={setPreferences}
             />
