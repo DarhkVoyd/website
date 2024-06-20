@@ -11,22 +11,25 @@ import StyledMarkdown from '~/components/StyledMarkdown';
 import matter from 'gray-matter';
 import Fuse from 'fuse.js';
 import { DRAFT_ORDER } from '~/lib/config';
-import collectDataDomains, { type DataDomains } from './collectDataDomains';
+import getUniqueValuesPerField, { Exclusions } from './getUniqueValuesPerField';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
     fs.readFileSync('data/tooling-data.yaml', 'utf-8'),
   ) as Tooling[];
+
   const intro = fs.readFileSync('pages/tools/content/intro.md', 'utf-8');
   const { content: introContent } = matter(intro);
-
-  const supportedDialectDrafts = DRAFT_ORDER.map(String);
-  const dataDomains = collectDataDomains(
+  const exclusions: Exclusions = {
+    'supportedDialects.draft': new Set(['1', '2', '3']),
+    license: new Set(['GPL-3.0']),
+  };
+  const dataDomains = getUniqueValuesPerField(
     toolingData,
-    'languages',
-    'license',
-  ) as DataDomains;
-  dataDomains.drafts = supportedDialectDrafts as Array<string>;
+    ['license', 'supportedDialects.draft', 'languages'],
+    exclusions,
+  );
+  console.log(dataDomains);
 
   return {
     props: {
