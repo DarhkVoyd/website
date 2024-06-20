@@ -33,6 +33,21 @@ export async function getStaticProps() {
     exclusions,
   );
 
+  uniqueValuesPerField['supportedDialects.draft']?.sort((a, b) => {
+    const aIndex = DRAFT_ORDER.map(String).indexOf(a);
+    const bIndex = DRAFT_ORDER.map(String).indexOf(b);
+
+    if (aIndex === -1 && bIndex === -1) {
+      return 0;
+    } else if (aIndex === -1) {
+      return 1;
+    } else if (bIndex === -1) {
+      return -1;
+    }
+
+    return aIndex - bIndex;
+  });
+
   return {
     props: {
       toolingData,
@@ -61,7 +76,7 @@ export interface Tooling {
 export interface Preferences {
   query: string;
   viewBy: 'all' | 'toolingType' | 'languages';
-  sortBy: 'none' | 'name' | 'languages' | 'drafts' | 'license';
+  sortBy: 'none' | 'name' | 'license';
   languages: string[] | null;
   licenses: string[] | null;
   drafts: string[] | null;
@@ -161,7 +176,7 @@ function usePreferences(tools: Tooling[]) {
     sortBy: 'none',
     languages: null,
     licenses: null,
-    drafts: null,
+    drafts: ['8'],
   });
 
   const fuse = useMemo(
@@ -185,7 +200,85 @@ function usePreferences(tools: Tooling[]) {
     }
   }, [fuse, preferences.query]);
 
-  hits.forEach((tool: Tooling) => {
+  const filteredHits = useMemo(() => {
+    if (hits.length === 0) {
+      return [];
+    }
+
+    if (
+      !preferences.languages &&
+      !preferences.licenses &&
+      !preferences.drafts
+    ) {
+      return hits;
+    }
+
+    return hits
+      .filter((tool: Tooling) => {
+        if (preferences.languages && preferences.languages.length > 0) {
+          if (
+            !tool.languages ||
+            !preferences.languages.some((lang) =>
+              tool.languages.some(
+                (l) => l.toLowerCase() === lang.toLowerCase(),
+              ),
+            )
+          ) {
+            return false;
+          }
+        }
+
+        if (preferences.licenses && preferences.licenses.length > 0) {
+          if (
+            !tool.license ||
+            !preferences.licenses.some(
+              (license) => license.toLowerCase() === tool.license.toLowerCase(),
+            )
+          ) {
+            return false;
+          }
+        }
+
+        if (preferences.drafts && preferences.drafts.length > 0) {
+          if (!tool.supportedDialects || !tool.supportedDialects.draft) {
+            return false;
+          }
+          const toolDrafts = tool.supportedDialects.draft.map(String);
+
+          if (!preferences.drafts.some((draft) => toolDrafts.includes(draft))) {
+            return false;
+          }
+        }
+
+        return true;
+      })
+      .sort((a: Tooling, b: Tooling) => {
+        if (preferences.sortBy === 'none') {
+          return 0;
+        }
+
+        let aValue: any, bValue: any;
+
+        switch (preferences.sortBy) {
+          case 'name':
+            aValue = a.name.toLowerCase();
+            bValue = b.name.toLowerCase();
+            break;
+          case 'license':
+            aValue = a.license ? a.license.toLowerCase() : '';
+            bValue = b.license ? b.license.toLowerCase() : '';
+            break;
+          default:
+            return 0;
+        }
+
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+        return 0;
+      });
+  }, [hits, preferences]);
+
+  filteredHits.forEach((tool: Tooling) => {
     if (Array.isArray(tool[preferences.viewBy])) {
       (tool[preferences.viewBy] as string[]).forEach((category: string) => {
         if (!preferredData[category]) {
@@ -198,7 +291,7 @@ function usePreferences(tools: Tooling[]) {
 
   return {
     preferredData,
-    length: hits.length,
+    length: filteredHits.length,
     preferences,
     setPreferences,
   };
