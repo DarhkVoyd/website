@@ -75,7 +75,7 @@ export interface Tooling {
 
 export interface Preferences {
   query: string;
-  viewBy: 'all' | 'toolingType' | 'languages';
+  viewBy: 'all' | 'toolingTypes' | 'languages';
   sortBy: 'none' | 'name' | 'license';
   languages: string[] | null;
   licenses: string[] | null;
@@ -172,11 +172,11 @@ function usePreferences(tools: Tooling[]) {
   const preferredData: { [key: string]: Tooling[] } = {};
   const [preferences, setPreferences] = useState<Preferences>({
     query: '',
-    viewBy: 'toolingType',
+    viewBy: 'toolingTypes',
     sortBy: 'none',
     languages: null,
     licenses: null,
-    drafts: ['8'],
+    drafts: null,
   });
 
   const fuse = useMemo(
@@ -213,81 +213,79 @@ function usePreferences(tools: Tooling[]) {
       return hits;
     }
 
-    return hits
-      .filter((tool: Tooling) => {
-        if (preferences.languages && preferences.languages.length > 0) {
-          if (
-            !tool.languages ||
-            !preferences.languages.some((lang) =>
-              tool.languages.some(
-                (l) => l.toLowerCase() === lang.toLowerCase(),
-              ),
-            )
-          ) {
-            return false;
-          }
+    return hits.filter((tool: Tooling) => {
+      if (preferences.languages && preferences.languages.length > 0) {
+        if (
+          !tool.languages ||
+          !preferences.languages.some((lang) =>
+            tool.languages.some((l) => l.toLowerCase() === lang.toLowerCase()),
+          )
+        ) {
+          return false;
         }
+      }
 
-        if (preferences.licenses && preferences.licenses.length > 0) {
-          if (
-            !tool.license ||
-            !preferences.licenses.some(
-              (license) => license.toLowerCase() === tool.license.toLowerCase(),
-            )
-          ) {
-            return false;
-          }
+      if (preferences.licenses && preferences.licenses.length > 0) {
+        if (
+          !tool.license ||
+          !preferences.licenses.some(
+            (license) => license.toLowerCase() === tool.license.toLowerCase(),
+          )
+        ) {
+          return false;
         }
+      }
 
-        if (preferences.drafts && preferences.drafts.length > 0) {
-          if (!tool.supportedDialects || !tool.supportedDialects.draft) {
-            return false;
-          }
-          const toolDrafts = tool.supportedDialects.draft.map(String);
-
-          if (!preferences.drafts.some((draft) => toolDrafts.includes(draft))) {
-            return false;
-          }
+      if (preferences.drafts && preferences.drafts.length > 0) {
+        if (!tool.supportedDialects || !tool.supportedDialects.draft) {
+          return false;
         }
+        const toolDrafts = tool.supportedDialects.draft.map(String);
 
-        return true;
-      })
-      .sort((a: Tooling, b: Tooling) => {
-        if (preferences.sortBy === 'none') {
-          return 0;
+        if (!preferences.drafts.some((draft) => toolDrafts.includes(draft))) {
+          return false;
         }
+      }
 
-        let aValue: any, bValue: any;
-
-        switch (preferences.sortBy) {
-          case 'name':
-            aValue = a.name.toLowerCase();
-            bValue = b.name.toLowerCase();
-            break;
-          case 'license':
-            aValue = a.license ? a.license.toLowerCase() : '';
-            bValue = b.license ? b.license.toLowerCase() : '';
-            break;
-          default:
-            return 0;
-        }
-
-        if (aValue < bValue) return -1;
-        if (aValue > bValue) return 1;
-        return 0;
-      });
+      return true;
+    });
   }, [hits, preferences]);
 
-  filteredHits.forEach((tool: Tooling) => {
-    if (Array.isArray(tool[preferences.viewBy])) {
-      (tool[preferences.viewBy] as string[]).forEach((category: string) => {
-        if (!preferredData[category]) {
-          preferredData[category] = [];
-        }
-        preferredData[category].push(tool);
-      });
-    }
-  });
+  filteredHits
+    .sort((a: Tooling, b: Tooling) => {
+      if (preferences.sortBy === 'none') {
+        return 0;
+      }
+
+      let aValue: any, bValue: any;
+
+      switch (preferences.sortBy) {
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case 'license':
+          aValue = a.license ? a.license.toLowerCase() : '';
+          bValue = b.license ? b.license.toLowerCase() : '';
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) return -1;
+      if (aValue > bValue) return 1;
+      return 0;
+    })
+    .forEach((tool: Tooling) => {
+      if (Array.isArray(tool[preferences.viewBy])) {
+        (tool[preferences.viewBy] as string[]).forEach((category: string) => {
+          if (!preferredData[category]) {
+            preferredData[category] = [];
+          }
+          preferredData[category].push(tool);
+        });
+      }
+    });
 
   return {
     preferredData,
