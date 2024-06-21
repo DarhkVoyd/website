@@ -16,10 +16,12 @@ export default function FilterSidebar({
   preferences: Preferences;
   setPreferences: Dispatch<SetStateAction<Preferences>>;
 }) {
-  function setViewBy() {}
-  const viewBy = 'toolingType';
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setViewBy(event.target.value as keyof Tooling);
+  const viewBy = preferences.viewBy;
+  const setViewPreference = (event: ChangeEvent<HTMLInputElement>) => {
+    setPreferences((prev) => ({
+      ...prev,
+      viewBy: event.target.value as typeof viewBy,
+    }));
   };
 
   return (
@@ -27,16 +29,22 @@ export default function FilterSidebar({
       <SearchBar preferences={preferences} setPreferences={setPreferences} />
       <FilterMenu label='View'>
         <Radio
-          label='Tooling Type'
-          value='toolingType'
+          label='All'
+          value='all'
           selectedValue={viewBy}
-          onChange={handleChange}
+          onChange={setViewPreference}
+        />
+        <Radio
+          label='Tooling Type'
+          value='toolingTypes'
+          selectedValue={viewBy}
+          onChange={setViewPreference}
         />
         <Radio
           label='Language'
           value='languages'
           selectedValue={viewBy}
-          onChange={handleChange}
+          onChange={setViewPreference}
         />
       </FilterMenu>
       {Object.keys(uniqueValuesPerField).map((field) => {

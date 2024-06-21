@@ -5,11 +5,11 @@ import { Preferences, Tooling } from './index.page';
 export default function usePreferences(tools: Tooling[]) {
   const [preferences, setPreferences] = useState<Preferences>({
     query: '',
-    viewBy: 'all',
-    sortBy: 'name',
+    viewBy: 'toolingTypes',
+    sortBy: 'none',
     languages: null,
-    licenses: ['mit'],
-    drafts: ['2020-12'],
+    licenses: null,
+    drafts: null,
   });
 
   const fuse = useMemo(() => {
