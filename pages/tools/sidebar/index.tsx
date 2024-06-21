@@ -11,10 +11,12 @@ export default function FilterSidebar({
   uniqueValuesPerField,
   preferences,
   setPreferences,
+  resetPreferences,
 }: {
   uniqueValuesPerField: UniqueValuesPerField;
   preferences: Preferences;
   setPreferences: Dispatch<SetStateAction<Preferences>>;
+  resetPreferences: () => void;
 }) {
   const filterFormRef = useRef<HTMLFormElement>(null);
   const viewBy = preferences.viewBy;
@@ -43,7 +45,12 @@ export default function FilterSidebar({
         ...formValues,
       };
     });
-    console.log(formValues);
+  };
+
+  const resetHandler = () => {
+    if (!filterFormRef.current) return;
+    filterFormRef.current.reset();
+    resetPreferences();
   };
 
   return (
@@ -89,6 +96,13 @@ export default function FilterSidebar({
         })}
         <button type='submit' className='bg-gray-300 px-4 py-2 rounded'>
           Submit
+        </button>
+        <button
+          type='button'
+          className='bg-gray-300 px-4 py-2 rounded'
+          onClick={resetHandler}
+        >
+          Reset
         </button>
       </form>
     </div>

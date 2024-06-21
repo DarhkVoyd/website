@@ -1,5 +1,6 @@
 import classnames from 'classnames';
-import React, { ReactNode, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 export default function FilterMenu({
   children,
@@ -9,6 +10,11 @@ export default function FilterMenu({
   label: string;
 }) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsFilterOpen(false);
+  }, [router]);
 
   return (
     <div className='my-2 bg-slate-200 p-2 rounded'>

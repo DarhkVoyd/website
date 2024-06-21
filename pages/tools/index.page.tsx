@@ -74,8 +74,13 @@ export default function ToolingPage({
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const { preferredData, numberOfEntries, preferences, setPreferences } =
-    usePreferences(toolingData);
+  const {
+    preferredData,
+    numberOfEntries,
+    preferences,
+    setPreferences,
+    resetPreferences,
+  } = usePreferences(toolingData);
 
   return (
     <SectionContext.Provider value='tools'>
@@ -123,6 +128,7 @@ export default function ToolingPage({
               uniqueValuesPerField={uniqueValuesPerField}
               preferences={preferences}
               setPreferences={setPreferences}
+              resetPreferences={resetPreferences}
             />
           </div>
 

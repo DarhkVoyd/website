@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { type Tooling } from './index.page';
 
 export interface Preferences {
@@ -11,15 +12,64 @@ export interface Preferences {
   'supportedDialects.draft': string[] | null;
 }
 
+function getQueryParamValues(
+  param: string | string[] | undefined,
+): string[] | null {
+  if (!param) return null;
+
+  if (typeof param === 'string') {
+    return [decodeURIComponent(param)];
+  } else {
+    return param.map((p) => decodeURIComponent(p));
+  }
+}
+
 export default function usePreferences(tools: Tooling[]) {
-  const [preferences, setPreferences] = useState<Preferences>({
-    query: '',
-    viewBy: 'toolingTypes',
-    sortBy: 'none',
-    languages: null,
-    license: null,
-    'supportedDialects.draft': null,
-  });
+  const router = useRouter();
+  const { asPath } = router;
+  const urlParams = new URLSearchParams(asPath.split('?')[1]);
+
+  const initialPreferences: Preferences = {
+    query: (urlParams.get('query') as Preferences['query']) || '',
+    viewBy:
+      (urlParams.get('viewBy') as Preferences['viewBy']) || 'toolingTypes',
+    sortBy: (urlParams.get('sortBy') as Preferences['sortBy']) || 'none',
+    languages: getQueryParamValues(urlParams.getAll('languages')),
+    license: getQueryParamValues(urlParams.getAll('license')),
+    'supportedDialects.draft': getQueryParamValues(
+      urlParams.getAll('supportedDialects.draft'),
+    ),
+  };
+
+  const [preferences, setPreferences] =
+    useState<Preferences>(initialPreferences);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    Object.entries(preferences).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (Array.isArray(value)) {
+          value.forEach((val) => params.append(key, val));
+        } else {
+          params.set(key, value);
+        }
+      }
+    });
+
+    router.replace({ query: params.toString() }, undefined, { shallow: true });
+  }, [preferences]);
+
+  const resetPreferences = () => {
+    setPreferences({
+      query: '',
+      viewBy: 'toolingTypes',
+      sortBy: 'none',
+      languages: null,
+      license: null,
+      'supportedDialects.draft': null,
+    });
+  };
 
   const fuse = useMemo(() => {
     return new Fuse(tools, {
@@ -145,11 +195,11 @@ export default function usePreferences(tools: Tooling[]) {
 
     return data;
   }, [sortedHits, preferences.viewBy]);
-
   return {
     preferredData,
-    numberOfEntries: hits.length,
+    numberOfEntries: filteredHits.length,
     preferences,
     setPreferences,
+    resetPreferences,
   };
 }
