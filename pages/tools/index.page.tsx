@@ -7,8 +7,6 @@ import { SectionContext } from '~/context';
 import { getLayout } from '~/components/SiteLayout';
 import Sidebar from './sidebar/';
 import ToolingTable from './ToolingTable';
-import StyledMarkdown from '~/components/StyledMarkdown';
-import matter from 'gray-matter';
 import { DRAFT_ORDER } from '~/lib/config';
 import getUniqueValuesPerField, {
   UniqueValuesPerField,
@@ -19,9 +17,6 @@ export async function getStaticProps() {
   const toolingData = yaml.load(
     fs.readFileSync('data/tooling-data.yaml', 'utf-8'),
   ) as Tooling[];
-
-  const intro = fs.readFileSync('pages/tools/content/intro.md', 'utf-8');
-  const { content: introContent } = matter(intro);
 
   const exclusions = {
     'supportedDialects.draft': new Set(['1', '2', '3']),
@@ -52,9 +47,6 @@ export async function getStaticProps() {
     props: {
       toolingData,
       uniqueValuesPerField,
-      content: {
-        intro: introContent,
-      },
     },
   };
 }
@@ -73,23 +65,12 @@ export interface Tooling {
   lastUpdated: string;
 }
 
-export interface Preferences {
-  query: string;
-  viewBy: 'all' | 'toolingTypes' | 'languages';
-  sortBy: 'none' | 'name' | 'license';
-  languages: string[] | null;
-  licenses: string[] | null;
-  drafts: string[] | null;
-}
-
 export default function ToolingPage({
   toolingData,
   uniqueValuesPerField,
-  content,
 }: {
   toolingData: Tooling[];
   uniqueValuesPerField: UniqueValuesPerField;
-  content: Record<string, string>;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -147,7 +128,14 @@ export default function ToolingPage({
 
           <main className='md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
             <Headline1>JSON Schema Tooling</Headline1>
-            <StyledMarkdown markdown={content.intro} />
+            <p className='text-slate-600 block leading-7 pb-4 dark:text-slate-300'>
+              Toolings below are written in different languages, and support
+              part, or all, of at least one recent version of the specificiton.
+            </p>
+            <p className='text-slate-600 block leading-7 pb-4 dark:text-slate-300'>
+              Listing does not signify a recommendation or endorsement of any
+              kind.
+            </p>
             <div className='w-full grid grid-cols-1 lg:grid-cols-2'>
               <div>
                 Raise an issue and we'll add your tool to the data we use to
@@ -158,7 +146,7 @@ export default function ToolingPage({
                 reporting results from other validators.
               </div>
             </div>
-            <ToolingTable tools={preferredData} viewBy='toolingType' />
+            <ToolingTable tools={preferredData} />
           </main>
         </div>
       </div>

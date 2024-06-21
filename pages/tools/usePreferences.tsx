@@ -1,6 +1,15 @@
 import Fuse from 'fuse.js';
 import { useMemo, useState } from 'react';
-import { Preferences, Tooling } from './index.page';
+import { type Tooling } from './index.page';
+
+export interface Preferences {
+  query: string;
+  viewBy: 'all' | 'toolingTypes' | 'languages';
+  sortBy: 'none' | 'name' | 'license';
+  license: string[] | null;
+  languages: string[] | null;
+  'supportedDialects.draft': string[] | null;
+}
 
 export default function usePreferences(tools: Tooling[]) {
   const [preferences, setPreferences] = useState<Preferences>({
@@ -8,8 +17,8 @@ export default function usePreferences(tools: Tooling[]) {
     viewBy: 'toolingTypes',
     sortBy: 'none',
     languages: null,
-    licenses: null,
-    drafts: null,
+    license: null,
+    'supportedDialects.draft': null,
   });
 
   const fuse = useMemo(() => {
@@ -31,8 +40,8 @@ export default function usePreferences(tools: Tooling[]) {
   const filteredHits = useMemo(() => {
     if (
       !preferences.languages &&
-      !preferences.licenses &&
-      !preferences.drafts
+      !preferences.license &&
+      !preferences['supportedDialects.draft']
     ) {
       return hits;
     }
@@ -49,10 +58,10 @@ export default function usePreferences(tools: Tooling[]) {
         }
       }
 
-      if (preferences.licenses && preferences.licenses.length > 0) {
+      if (preferences.license && preferences.license.length > 0) {
         if (
           !tool.license ||
-          !preferences.licenses.some(
+          !preferences.license.some(
             (license) => license.toLowerCase() === tool.license.toLowerCase(),
           )
         ) {
@@ -60,20 +69,32 @@ export default function usePreferences(tools: Tooling[]) {
         }
       }
 
-      if (preferences.drafts && preferences.drafts.length > 0) {
+      if (
+        preferences['supportedDialects.draft'] &&
+        preferences['supportedDialects.draft'].length > 0
+      ) {
         if (!tool.supportedDialects || !tool.supportedDialects.draft) {
           return false;
         }
         const toolDrafts = tool.supportedDialects.draft.map(String);
 
-        if (!preferences.drafts.some((draft) => toolDrafts.includes(draft))) {
+        if (
+          !preferences['supportedDialects.draft'].some((draft) =>
+            toolDrafts.includes(draft),
+          )
+        ) {
           return false;
         }
       }
 
       return true;
     });
-  }, [hits, preferences.languages, preferences.licenses, preferences.drafts]);
+  }, [
+    hits,
+    preferences.languages,
+    preferences.license,
+    preferences['supportedDialects.draft'],
+  ]);
 
   const sortedHits = useMemo(() => {
     if (preferences.sortBy === 'none') {
@@ -127,7 +148,7 @@ export default function usePreferences(tools: Tooling[]) {
 
   return {
     preferredData,
-    length: filteredHits.length,
+    length: hits.length,
     preferences,
     setPreferences,
   };

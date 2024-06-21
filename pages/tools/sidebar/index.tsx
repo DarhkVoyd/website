@@ -1,11 +1,11 @@
-import React, { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { Preferences, type Tooling } from '../index.page';
+import React, { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
 import FilterMenu from './FilterMenu';
 import Radio from './Radio';
 import SearchBar from './SearchBar';
 import { toTitleCase } from '../ToolingTable';
 import Checkbox from './Checkbox';
 import { Fields, UniqueValuesPerField } from '../getUniqueValuesPerField';
+import { Preferences } from '../usePreferences';
 
 export default function FilterSidebar({
   uniqueValuesPerField,
@@ -16,12 +16,34 @@ export default function FilterSidebar({
   preferences: Preferences;
   setPreferences: Dispatch<SetStateAction<Preferences>>;
 }) {
+  const filterFormRef = useRef<HTMLFormElement>(null);
   const viewBy = preferences.viewBy;
   const setViewPreference = (event: ChangeEvent<HTMLInputElement>) => {
     setPreferences((prev) => ({
       ...prev,
       viewBy: event.target.value as typeof viewBy,
     }));
+  };
+
+  const submitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!filterFormRef.current) return;
+    const formData = new FormData(filterFormRef.current);
+    const formValues: Record<string, string[]> = {};
+
+    setPreferences((prev) => {
+      formData.forEach((value, key) => {
+        if (!formValues[key]) {
+          formValues[key] = [];
+        }
+        formValues[key].push(value as string);
+      });
+      return {
+        ...prev,
+        ...formValues,
+      };
+    });
+    console.log(formValues);
   };
 
   return (
@@ -47,22 +69,28 @@ export default function FilterSidebar({
           onChange={setViewPreference}
         />
       </FilterMenu>
-      {Object.keys(uniqueValuesPerField).map((field) => {
-        const values = uniqueValuesPerField[field as Fields];
-        const label = field.split('.').pop();
-        return (
-          <FilterMenu key={field} label={toTitleCase(label!)}>
-            {values &&
-              values.map((uniqueValue) => (
-                <Checkbox
-                  key={uniqueValue}
-                  label={uniqueValue}
-                  value={uniqueValue}
-                />
-              ))}
-          </FilterMenu>
-        );
-      })}
+      <form onSubmit={submitHandler} ref={filterFormRef} className='w-full'>
+        {Object.keys(uniqueValuesPerField).map((field) => {
+          const values = uniqueValuesPerField[field as Fields];
+          const label = field.split('.').pop();
+          return (
+            <FilterMenu key={field} label={toTitleCase(label!)}>
+              {values &&
+                values.map((uniqueValue) => (
+                  <Checkbox
+                    key={uniqueValue}
+                    label={uniqueValue}
+                    value={uniqueValue}
+                    name={field}
+                  />
+                ))}
+            </FilterMenu>
+          );
+        })}
+        <button type='submit' className='bg-gray-300 px-4 py-2 rounded'>
+          Submit
+        </button>
+      </form>
     </div>
   );
 }

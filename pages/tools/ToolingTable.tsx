@@ -3,13 +3,7 @@ import { type Tooling } from './index.page';
 import { Headline2 } from '~/components/Headlines';
 import Link from 'next/link';
 
-const ToolingTable = ({
-  tools,
-  viewBy = 'toolingType',
-}: {
-  tools: Tooling[];
-  viewBy?: keyof Tooling;
-}) => {
+const ToolingTable = ({ tools }: { tools: { [key: string]: Tooling[] } }) => {
   const categories = Object.keys(tools);
   return (
     <>
