@@ -87,7 +87,7 @@ const ToolingTable = ({
                       <td className='px-4 py-2 border-b border-gray-200 relative group'>
                         <button
                           onClick={() => openModal(item)}
-                          className='focus:outline-none'
+                          className='text-left focus:outline-none'
                         >
                           {item.name}
                         </button>
