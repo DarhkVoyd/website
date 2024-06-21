@@ -2,8 +2,15 @@ import React from 'react';
 import { type Tooling } from './index.page';
 import { Headline2 } from '~/components/Headlines';
 import Link from 'next/link';
+import { Preferences } from './usePreferences';
 
-const ToolingTable = ({ tools }: { tools: { [key: string]: Tooling[] } }) => {
+const ToolingTable = ({
+  tools,
+  preferences,
+}: {
+  tools: { [key: string]: Tooling[] };
+  preferences: Preferences;
+}) => {
   const categories = Object.keys(tools);
   return (
     <>
@@ -18,9 +25,16 @@ const ToolingTable = ({ tools }: { tools: { [key: string]: Tooling[] } }) => {
                 <thead>
                   <tr>
                     <th className='px-4 py-2 border-b border-gray-200'>Name</th>
-                    <th className='px-4 py-2 border-b border-gray-200'>
-                      Languages
-                    </th>
+                    {preferences.viewBy !== 'toolingTypes' && (
+                      <th className='px-4 py-2 border-b border-gray-200'>
+                        Tooling Type
+                      </th>
+                    )}
+                    {preferences.viewBy !== 'languages' && (
+                      <th className='px-4 py-2 border-b border-gray-200'>
+                        Languages
+                      </th>
+                    )}
                     <th className='px-4 py-2 border-b border-gray-200'>
                       Drafts
                     </th>
@@ -42,9 +56,20 @@ const ToolingTable = ({ tools }: { tools: { [key: string]: Tooling[] } }) => {
                           </p>
                         </div>
                       </td>
-                      <td className='px-4 py-2 border-b border-gray-200'>
-                        {item.languages?.join(', ')}
-                      </td>
+                      {preferences.viewBy !== 'toolingTypes' && (
+                        <td className='px-4 py-2 border-b border-gray-200'>
+                          {item.toolingTypes
+                            ?.map((type) => {
+                              return toTitleCase(type.replace(/-/g, ' '));
+                            })
+                            .join(', ')}
+                        </td>
+                      )}
+                      {preferences.viewBy !== 'languages' && (
+                        <td className='px-4 py-2 border-b border-gray-200'>
+                          {item.languages?.join(', ')}
+                        </td>
+                      )}
                       <td className='px-4 py-2 border-b border-gray-200'>
                         {item.supportedDialects?.draft.join(', ')}
                       </td>
@@ -62,23 +87,6 @@ const ToolingTable = ({ tools }: { tools: { [key: string]: Tooling[] } }) => {
     </>
   );
 };
-
-function categoriseTooling(tools: Tooling[], viewBy: keyof Tooling) {
-  const categorisedTooling: { [key: string]: Tooling[] } = {};
-
-  tools.forEach((tool: Tooling) => {
-    if (Array.isArray(tool[viewBy])) {
-      (tool[viewBy] as string[]).forEach((category: string) => {
-        if (!categorisedTooling[category]) {
-          categorisedTooling[category] = [];
-        }
-        categorisedTooling[category].push(tool);
-      });
-    }
-  });
-
-  return categorisedTooling;
-}
 
 export function toTitleCase(str: string) {
   return str

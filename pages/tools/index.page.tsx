@@ -152,7 +152,7 @@ export default function ToolingPage({
                 reporting results from other validators.
               </div>
             </div>
-            <ToolingTable tools={preferredData} />
+            <ToolingTable tools={preferredData} preferences={preferences} />
           </main>
         </div>
       </div>
