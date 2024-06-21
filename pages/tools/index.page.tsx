@@ -13,6 +13,20 @@ import getUniqueValuesPerField, {
 } from './getUniqueValuesPerField';
 import usePreferences from './usePreferences';
 
+export interface Tooling {
+  name: string;
+  description: string;
+  toolingTypes: string[];
+  languages: string[];
+  license: string;
+  source: string;
+  homepage: string;
+  supportedDialects: {
+    draft: string[];
+  };
+  lastUpdated: string;
+}
+
 export async function getStaticProps() {
   const toolingData = yaml.load(
     fs.readFileSync('data/tooling-data.yaml', 'utf-8'),
@@ -49,20 +63,6 @@ export async function getStaticProps() {
       uniqueValuesPerField,
     },
   };
-}
-
-export interface Tooling {
-  name: string;
-  description: string;
-  toolingType: string[];
-  languages: string[];
-  license: string;
-  repositoryURL: string;
-  homepageURL: string;
-  supportedDialects: {
-    draft: string[];
-  };
-  lastUpdated: string;
 }
 
 export default function ToolingPage({
