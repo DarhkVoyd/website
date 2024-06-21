@@ -169,7 +169,6 @@ export default function ToolingPage({
 ToolingPage.getLayout = getLayout;
 
 function usePreferences(tools: Tooling[]) {
-  const preferredData: { [key: string]: Tooling[] } = {};
   const [preferences, setPreferences] = useState<Preferences>({
     query: '',
     viewBy: 'toolingTypes',
@@ -179,32 +178,23 @@ function usePreferences(tools: Tooling[]) {
     drafts: null,
   });
 
-  const fuse = useMemo(
-    () =>
-      new Fuse(tools, {
-        keys: ['name'],
-        includeScore: true,
-        threshold: 0.3,
-      }),
-    [tools],
-  );
+  const fuse = useMemo(() => {
+    return new Fuse(tools, {
+      keys: ['name'],
+      includeScore: true,
+      threshold: 0.3,
+    });
+  }, [tools]);
 
   const hits = useMemo(() => {
     if (preferences.query.trim() === '') {
       return tools;
     } else {
-      const searchResults = fuse
-        .search(preferences.query)
-        .map((result) => result.item);
-      return searchResults;
+      return fuse.search(preferences.query).map((result) => result.item);
     }
-  }, [fuse, preferences.query]);
+  }, [fuse, preferences.query, tools]);
 
   const filteredHits = useMemo(() => {
-    if (hits.length === 0) {
-      return [];
-    }
-
     if (
       !preferences.languages &&
       !preferences.licenses &&
@@ -249,15 +239,15 @@ function usePreferences(tools: Tooling[]) {
 
       return true;
     });
-  }, [hits, preferences]);
+  }, [hits, preferences.languages, preferences.licenses, preferences.drafts]);
 
-  filteredHits
-    .sort((a: Tooling, b: Tooling) => {
-      if (preferences.sortBy === 'none') {
-        return 0;
-      }
+  const sortedHits = useMemo(() => {
+    if (preferences.sortBy === 'none') {
+      return filteredHits;
+    }
 
-      let aValue: any, bValue: any;
+    const compare = (a: Tooling, b: Tooling) => {
+      let aValue, bValue;
 
       switch (preferences.sortBy) {
         case 'name':
@@ -275,17 +265,31 @@ function usePreferences(tools: Tooling[]) {
       if (aValue < bValue) return -1;
       if (aValue > bValue) return 1;
       return 0;
-    })
-    .forEach((tool: Tooling) => {
-      if (Array.isArray(tool[preferences.viewBy])) {
-        (tool[preferences.viewBy] as string[]).forEach((category: string) => {
-          if (!preferredData[category]) {
-            preferredData[category] = [];
-          }
-          preferredData[category].push(tool);
-        });
-      }
-    });
+    };
+
+    return [...filteredHits].sort(compare);
+  }, [filteredHits, preferences.sortBy]);
+
+  const preferredData = useMemo(() => {
+    const data = {};
+
+    if (preferences.viewBy === 'all') {
+      data['all'] = sortedHits;
+    } else {
+      sortedHits.forEach((tool) => {
+        if (Array.isArray(tool[preferences.viewBy])) {
+          tool[preferences.viewBy].forEach((category) => {
+            if (!data[category]) {
+              data[category] = [];
+            }
+            data[category].push(tool);
+          });
+        }
+      });
+    }
+
+    return data;
+  }, [sortedHits, preferences.viewBy]);
 
   return {
     preferredData,

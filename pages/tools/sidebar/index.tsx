@@ -23,7 +23,7 @@ export default function FilterSidebar({
   };
 
   return (
-    <div className='sticky top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5'>
+    <div className='top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5'>
       <SearchBar preferences={preferences} setPreferences={setPreferences} />
       <FilterMenu label='View'>
         <Radio
