@@ -1,8 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { type Tooling } from './index.page';
 import { Headline2 } from '~/components/Headlines';
 import Link from 'next/link';
 import { Preferences } from './usePreferences';
+
+const Modal = ({ tool, onClose }) => (
+  <div className='fixed inset-0 flex items-center justify-center z-50'>
+    <div className='fixed inset-0 bg-black opacity-50' onClick={onClose}></div>
+    <div className='bg-white rounded-lg p-8 max-w-lg w-full relative z-50'>
+      <div className='flex justify-end absolute top-0 right-0 mt-4 mr-4'>
+        <button onClick={onClose} className='text-gray-500 hover:text-gray-700'>
+          <svg
+            className='h-6 w-6 fill-current'
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 24 24'
+          >
+            <path
+              className='heroicon-ui'
+              d='M6.293 7.293a1 1 0 011.414 0L12 10.586l4.293-4.293a1 1 0 111.414 1.414L13.414 12l4.293 4.293a1 1 0 01-1.414 1.414L12 13.414l-4.293 4.293a1 1 0 01-1.414-1.414L10.586 12 6.293 7.707a1 1 0 010-1.414z'
+            />
+          </svg>
+        </button>
+      </div>
+      <div className='mt-4'>
+        <h2 className='text-xl font-bold'>{tool.name}</h2>
+        <p className='text-gray-700 mt-2'>{tool.description}</p>
+        {/* Additional tool details can be displayed here */}
+      </div>
+    </div>
+  </div>
+);
 
 const ToolingTable = ({
   tools,
@@ -11,7 +38,18 @@ const ToolingTable = ({
   tools: { [key: string]: Tooling[] };
   preferences: Preferences;
 }) => {
+  const [selectedTool, setSelectedTool] = useState<Tooling | null>(null);
+
   const categories = Object.keys(tools);
+
+  const openModal = (tool: Tooling) => {
+    setSelectedTool(tool);
+  };
+
+  const closeModal = () => {
+    setSelectedTool(null);
+  };
+
   return (
     <>
       {categories.map((category) => {
@@ -47,14 +85,12 @@ const ToolingTable = ({
                   {tools[category].map((item, index) => (
                     <tr key={index} className='hover:bg-gray-100'>
                       <td className='px-4 py-2 border-b border-gray-200 relative group'>
-                        <Link href={`${item.source ?? item.homepage}`}>
+                        <button
+                          onClick={() => openModal(item)}
+                          className='focus:outline-none'
+                        >
                           {item.name}
-                        </Link>
-                        <div className='absolute left-0 top-full mt-2 w-64 p-4 bg-white border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10'>
-                          <p className='text-sm text-gray-700'>
-                            {item.description}
-                          </p>
-                        </div>
+                        </button>
                       </td>
                       {preferences.viewBy !== 'toolingTypes' && (
                         <td className='px-4 py-2 border-b border-gray-200'>
@@ -84,6 +120,7 @@ const ToolingTable = ({
           </section>
         );
       })}
+      {selectedTool && <Modal tool={selectedTool} onClose={closeModal} />}
     </>
   );
 };
