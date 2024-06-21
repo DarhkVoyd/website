@@ -148,7 +148,7 @@ export default function usePreferences(tools: Tooling[]) {
 
   return {
     preferredData,
-    length: hits.length,
+    numberOfEntries: hits.length,
     preferences,
     setPreferences,
   };
