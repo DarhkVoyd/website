@@ -8,7 +8,7 @@ import {
   type UniqueValuesPerField,
 } from '../lib/getUniqueValuesPerField';
 import { type Preferences } from '../lib/usePreferences';
-import toTitleCase from '../lib/toTitleCase';
+import convertToTitleCase from '../lib/convertToTitleCase';
 
 export default function FilterSidebar({
   uniqueValuesPerField,
@@ -84,7 +84,7 @@ export default function FilterSidebar({
           const values = uniqueValuesPerField[field as Fields];
           const label = field.split('.').pop();
           return (
-            <FilterMenu key={field} label={toTitleCase(label!)}>
+            <FilterMenu key={field} label={convertToTitleCase(label!)}>
               {values &&
                 values.map((uniqueValue) => (
                   <Checkbox

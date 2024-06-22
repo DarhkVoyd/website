@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { type Tooling } from '../lib/JSONSchemaTool';
 import { Headline2 } from '~/components/Headlines';
 import { type Preferences } from '../lib/usePreferences';
-import toTitleCase from '../lib/toTitleCase';
+import convertToTitleCase from '../lib/convertToTitleCase';
 import ToolingDetailModal from './ToolingDetailModal';
 
 const ToolingTable = ({
@@ -30,7 +30,7 @@ const ToolingTable = ({
         return (
           <section key={category} className='mb-12 text-left'>
             <div className='my-10 px-4 w-full bg-gray-100'>
-              <Headline2>{toTitleCase(category.replace(/-/g, ' '))}</Headline2>
+              <Headline2>{convertToTitleCase(category, '-')}</Headline2>
             </div>
             <div>
               <table className='min-w-full bg-white border border-gray-200'>
@@ -70,7 +70,7 @@ const ToolingTable = ({
                         <td className='px-4 py-2 border-b border-gray-200'>
                           {item.toolingTypes
                             ?.map((type) => {
-                              return toTitleCase(type.replace(/-/g, ' '));
+                              return convertToTitleCase(type, '-');
                             })
                             .join(', ')}
                         </td>
