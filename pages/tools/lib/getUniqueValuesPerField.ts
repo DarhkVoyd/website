@@ -3,7 +3,7 @@ import { type Tooling } from './JSONSchemaTool';
 export type Fields = 'license' | 'languages' | 'supportedDialects.draft';
 
 export interface Exclusions {
-  [key: string]: Set<string>;
+  [field: string]: Set<string>;
 }
 
 export type UniqueValuesPerField = Partial<Record<Fields, string[]>>;
@@ -13,19 +13,19 @@ const getFieldValue = (obj: any, path: string): any => {
 };
 
 const getUniqueValuesPerField = (
-  data: Tooling[],
+  tools: Tooling[],
   fields: Fields[],
   exclusions: Exclusions = {},
 ): UniqueValuesPerField => {
-  const uniqueValuesPerField: { [key: string]: Set<string> } = {};
+  const uniqueValuesPerField: { [field: string]: Set<string> } = {};
 
   fields.forEach((field) => {
     uniqueValuesPerField[field] = new Set<string>();
   });
 
-  data.forEach((item) => {
+  tools.forEach((tool) => {
     fields.forEach((field) => {
-      const value = getFieldValue(item, field);
+      const value = getFieldValue(tool, field);
       const excludeSet = exclusions[field] || new Set<string>();
 
       if (value !== undefined) {
