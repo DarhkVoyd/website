@@ -5,27 +5,14 @@ import yaml from 'js-yaml';
 import { Headline1 } from '~/components/Headlines';
 import { SectionContext } from '~/context';
 import { getLayout } from '~/components/SiteLayout';
-import Sidebar from './sidebar/';
-import ToolingTable from './ToolingTable';
+import Sidebar from './components/Sidebar';
+import ToolingTable from './components/ToolingTable';
 import { DRAFT_ORDER } from '~/lib/config';
 import getUniqueValuesPerField, {
   UniqueValuesPerField,
-} from './getUniqueValuesPerField';
-import usePreferences from './usePreferences';
-
-export interface Tooling {
-  name: string;
-  description: string;
-  toolingTypes: string[];
-  languages: string[];
-  license: string;
-  source: string;
-  homepage: string;
-  supportedDialects: {
-    draft: string[];
-  };
-  lastUpdated: string;
-}
+} from './lib/getUniqueValuesPerField';
+import usePreferences from './lib/usePreferences';
+import { Tooling } from './lib/JSONSchemaTool';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(

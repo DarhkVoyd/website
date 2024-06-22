@@ -2,10 +2,13 @@ import React, { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
 import FilterMenu from './FilterMenu';
 import Radio from './Radio';
 import SearchBar from './SearchBar';
-import { toTitleCase } from '../ToolingTable';
 import Checkbox from './Checkbox';
-import { Fields, UniqueValuesPerField } from '../getUniqueValuesPerField';
-import { Preferences } from '../usePreferences';
+import {
+  type Fields,
+  type UniqueValuesPerField,
+} from '../lib/getUniqueValuesPerField';
+import { type Preferences } from '../lib/usePreferences';
+import toTitleCase from '../lib/toTitleCase';
 
 export default function FilterSidebar({
   uniqueValuesPerField,
@@ -94,16 +97,18 @@ export default function FilterSidebar({
             </FilterMenu>
           );
         })}
-        <button type='submit' className='bg-gray-300 px-4 py-2 rounded'>
-          Submit
-        </button>
-        <button
-          type='button'
-          className='bg-gray-300 px-4 py-2 rounded'
-          onClick={resetHandler}
-        >
-          Reset
-        </button>
+        <div className='w-full flex items-center justify-between gap-4'>
+          <button
+            type='button'
+            className='text-sm text-gray-600 italic hover:underline hover:text-gray-800 focus:outline-none'
+            onClick={resetHandler}
+          >
+            Clear Filters
+          </button>
+          <button type='submit' className='bg-gray-300 px-4 py-2 rounded'>
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );
