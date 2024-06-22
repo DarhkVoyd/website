@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Preferences } from '../index.page';
+import { type Preferences } from '../lib/usePreferences';
 
 interface SearchBarProps {
   preferences: Preferences;
