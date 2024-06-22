@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
-import { Tooling } from '../lib/JSONSchemaTool';
+import { type Tooling } from '../lib/JSONSchemaTool';
+import convertToTitleCase from '../lib/convertToTitleCase';
+import Link from 'next/link';
 
 export default function ToolingDetailModal({
   tool,
@@ -35,21 +37,48 @@ export default function ToolingDetailModal({
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 24 24'
             >
-              <path
-                className='heroicon-ui'
-                d='M6.293 7.293a1 1 0 011.414 0L12 10.586l4.293-4.293a1 1 0 111.414 1.414L13.414 12l4.293 4.293a1 1 0 01-1.414 1.414L12 13.414l-4.293 4.293a1 1 0 01-1.414-1.414L10.586 12 6.293 7.707a1 1 0 010-1.414z'
-              />
+              <path d='M6.293 7.293a1 1 0 011.414 0L12 10.586l4.293-4.293a1 1 0 111.414 1.414L13.414 12l4.293 4.293a1 1 0 01-1.414 1.414L12 13.414l-4.293 4.293a1 1 0 01-1.414-1.414L10.586 12 6.293 7.707a1 1 0 010-1.414z' />
             </svg>
           </button>
         </div>
         <div className='mt-4'>
-          <h2 className='text-2xl font-bold'>{tool.name}</h2>
+          <h2 className='text-h1mobile md:text-h4 font-bold '>{tool.name}</h2>
           {tool.description && (
             <p className='text-gray-600 mt-1 text-base'>{tool.description}</p>
           )}
         </div>
         <div className='flex flex-row mt-6'>
           <div className='w-1/2 pr-4'>
+            {tool.source && (
+              <div className='mt-4'>
+                <h3 className='text-lg font-semibold'>Source</h3>
+                <a
+                  href={tool.source}
+                  target='blank'
+                  className='text-blue-500 hover:underline'
+                >
+                  {tool.source}
+                </a>
+              </div>
+            )}
+            {tool.homepage && (
+              <div className='mt-4'>
+                <h3 className='text-lg font-semibold'>Homepage</h3>
+                <a
+                  href={tool.homepage}
+                  target='blank'
+                  className='text-blue-500 hover:underline'
+                >
+                  {tool.homepage}
+                </a>
+              </div>
+            )}
+            {tool.license && (
+              <div className='mt-4'>
+                <h3 className='text-lg font-semibold'>License</h3>
+                <p>{tool.license}</p>
+              </div>
+            )}
             {tool.compliance && (
               <div className='mt-4'>
                 <h3 className='text-lg font-semibold'>Compliance</h3>
@@ -60,6 +89,7 @@ export default function ToolingDetailModal({
                         <h4 className='font-semibold'>Docs:</h4>
                         <a
                           href={tool.compliance.config.docs}
+                          target='blank'
                           className='text-blue-500 hover:underline'
                         >
                           {tool.compliance.config.docs}
@@ -82,12 +112,101 @@ export default function ToolingDetailModal({
                 <p>{tool.toolingListingNotes}</p>
               </div>
             )}
+            {tool.creators && (
+              <div className='mt-4'>
+                <h3 className='text-lg font-semibold'>Creators</h3>
+                <ul className='list-disc list-inside'>
+                  {tool.creators.map((creator, index) => (
+                    <li key={index}>
+                      <span>{creator.name ? creator.name : 'N.A.'}</span>
+                      <span className='ml-1'>
+                        (
+                        {creator.username && creator.platform && (
+                          <a
+                            href={`https://${creator.platform}.com/${creator.username}`}
+                            target='blank'
+                            className='text-blue-500 hover:underline'
+                          >
+                            @{creator.username}
+                          </a>
+                        )}
+                        )
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {tool.maintainers && (
+              <div className='mt-4'>
+                <h3 className='text-lg font-semibold'>Maintainers</h3>
+                <ul className='list-disc list-inside'>
+                  {tool.maintainers.map((maintainer, index) => (
+                    <li key={index}>
+                      <span>{maintainer.name ? maintainer.name : 'N.A.'}</span>
+                      <span className='ml-1'>
+                        (
+                        {maintainer.username && maintainer.platform && (
+                          <a
+                            href={`https://${maintainer.platform}.com/${maintainer.username}`}
+                            target='blank'
+                            className='text-blue-500 hover:underline'
+                          >
+                            @{maintainer.username}
+                          </a>
+                        )}
+                        )
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+          <div className='w-1/2 pl-4'>
+            {tool.supportedDialects && (
+              <div className='mt-4'>
+                <h3 className='text-lg font-semibold'>Supported Dialects</h3>
+                {tool.supportedDialects.draft && (
+                  <div className='mt-2'>
+                    <h4 className='font-semibold'>Draft:</h4>
+                    <ul className='list-disc list-inside'>
+                      {tool.supportedDialects.draft.map((draft, index) => (
+                        <li key={index}>{draft}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {tool.supportedDialects.additional && (
+                  <div className='mt-2'>
+                    <h4 className='font-semibold'>Additional:</h4>
+                    <ul className='list-disc list-inside'>
+                      {tool.supportedDialects.additional.map(
+                        (additional, index) => (
+                          <li key={index}>
+                            {additional.name} (
+                            <a
+                              href={additional.source}
+                              target='blank'
+                              className='text-blue-500 hover:underline'
+                            >
+                              Source
+                            </a>
+                            )
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
             {tool.toolingTypes && (
               <div className='mt-4'>
                 <h3 className='text-lg font-semibold'>Tooling Types</h3>
                 <ul className='list-disc list-inside'>
                   {tool.toolingTypes.map((type, index) => (
-                    <li key={index}>{type}</li>
+                    <li key={index}>{convertToTitleCase(type)}</li>
                   ))}
                 </ul>
               </div>
@@ -102,136 +221,58 @@ export default function ToolingDetailModal({
                 </ul>
               </div>
             )}
-          </div>
-          <div className='w-1/2 pl-4'>
-            {tool.creators && (
+            {tool.environments && (
               <div className='mt-4'>
-                <h3 className='text-lg font-semibold'>Creators</h3>
+                <h3 className='text-lg font-semibold'>Environments</h3>
                 <ul className='list-disc list-inside'>
-                  {tool.creators.map((creator, index) => (
+                  {tool.environments.map((environment, index) => (
+                    <li key={index}>{environment}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {tool.bowtie && (
+              <div className='mt-4'>
+                <h3 className='text-lg font-semibold'>Bowtie Identifier</h3>
+                <p>{tool.bowtie.identifier}</p>
+              </div>
+            )}
+            {tool.dependsOnValidators && (
+              <div className='mt-4'>
+                <h3 className='text-lg font-semibold'>Depends On Validators</h3>
+                <ul className='list-disc list-inside'>
+                  {tool.dependsOnValidators.map((validator, index) => (
                     <li key={index}>
-                      {creator.username} ({creator.platform})
+                      <a
+                        href={validator}
+                        target='blank'
+                        className='text-blue-500 hover:underline'
+                      >
+                        {validator}
+                      </a>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
-            {tool.maintainers && (
+            {tool.landscape && (
               <div className='mt-4'>
-                <h3 className='text-lg font-semibold'>Maintainers</h3>
-                <ul className='list-disc list-inside'>
-                  {tool.maintainers.map((maintainer, index) => (
-                    <li key={index}>
-                      {maintainer.username} ({maintainer.platform})
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {tool.license && (
-              <div className='mt-4'>
-                <h3 className='text-lg font-semibold'>License</h3>
-                <p>{tool.license}</p>
-              </div>
-            )}
-            {tool.source && (
-              <div className='mt-4'>
-                <h3 className='text-lg font-semibold'>Source</h3>
-                <a href={tool.source} className='text-blue-500 hover:underline'>
-                  {tool.source}
-                </a>
-              </div>
-            )}
-            {tool.homepage && (
-              <div className='mt-4'>
-                <h3 className='text-lg font-semibold'>Homepage</h3>
-                <a
-                  href={tool.homepage}
-                  className='text-blue-500 hover:underline'
-                >
-                  {tool.homepage}
-                </a>
+                <h3 className='text-lg font-semibold'>Landscape</h3>
+                {tool.landscape.logo && (
+                  <div className='mt-2'>
+                    <h4 className='font-semibold'>Logo:</h4>
+                    <p>{tool.landscape.logo}</p>
+                  </div>
+                )}
+                {tool.landscape.optOut !== undefined && (
+                  <div className='mt-2'>
+                    <h4 className='font-semibold'>Opt-Out:</h4>
+                    <p>{tool.landscape.optOut ? 'Yes' : 'No'}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
-        </div>
-        <div className='mt-6'>
-          {tool.supportedDialects && (
-            <div className='mt-4'>
-              <h3 className='text-lg font-semibold'>Supported Dialects</h3>
-              {tool.supportedDialects.draft && (
-                <div className='mt-2'>
-                  <h4 className='font-semibold'>Draft:</h4>
-                  <ul className='list-disc list-inside'>
-                    {tool.supportedDialects.draft.map((draft, index) => (
-                      <li key={index}>{draft}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {tool.supportedDialects.additional && (
-                <div className='mt-2'>
-                  <h4 className='font-semibold'>Additional:</h4>
-                  <ul className='list-disc list-inside'>
-                    {tool.supportedDialects.additional.map(
-                      (additional, index) => (
-                        <li key={index}>
-                          {additional.name} (
-                          <a
-                            href={additional.source}
-                            className='text-blue-500 hover:underline'
-                          >
-                            Source
-                          </a>
-                          )
-                        </li>
-                      ),
-                    )}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-          {tool.bowtie && (
-            <div className='mt-4'>
-              <h3 className='text-lg font-semibold'>Bowtie Identifier</h3>
-              <p>{tool.bowtie.identifier}</p>
-            </div>
-          )}
-          {tool.dependsOnValidators && (
-            <div className='mt-4'>
-              <h3 className='text-lg font-semibold'>Depends On Validators</h3>
-              <ul className='list-disc list-inside'>
-                {tool.dependsOnValidators.map((validator, index) => (
-                  <li key={index}>
-                    <a
-                      href={validator}
-                      className='text-blue-500 hover:underline'
-                    >
-                      {validator}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {tool.landscape && (
-            <div className='mt-4'>
-              <h3 className='text-lg font-semibold'>Landscape</h3>
-              {tool.landscape.logo && (
-                <div className='mt-2'>
-                  <h4 className='font-semibold'>Logo:</h4>
-                  <p>{tool.landscape.logo}</p>
-                </div>
-              )}
-              {tool.landscape.optOut !== undefined && (
-                <div className='mt-2'>
-                  <h4 className='font-semibold'>Opt-Out:</h4>
-                  <p>{tool.landscape.optOut ? 'Yes' : 'No'}</p>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </div>
