@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 
-export default function FilterMenu({
+export default function DropdownMenu({
   children,
   label,
 }: {

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
-import FilterMenu from './FilterMenu';
+import DropdownMenu from './DropdownMenu';
 import Radio from './Radio';
 import SearchBar from './SearchBar';
 import Checkbox from './Checkbox';
@@ -59,7 +59,7 @@ export default function FilterSidebar({
   return (
     <div className='top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5'>
       <SearchBar preferences={preferences} setPreferences={setPreferences} />
-      <FilterMenu label='View'>
+      <DropdownMenu label='View'>
         <Radio
           label='All'
           value='all'
@@ -84,13 +84,13 @@ export default function FilterSidebar({
           selectedValue={viewBy}
           onChange={setViewPreference}
         />
-      </FilterMenu>
+      </DropdownMenu>
       <form onSubmit={submitHandler} ref={filterFormRef} className='w-full'>
         {Object.keys(uniqueValuesPerField).map((field) => {
           const values = uniqueValuesPerField[field as Fields];
           const label = field.split('.').pop();
           return (
-            <FilterMenu key={field} label={convertToTitleCase(label!)}>
+            <DropdownMenu key={field} label={convertToTitleCase(label!)}>
               {values &&
                 values.map((uniqueValue) => (
                   <Checkbox
@@ -100,7 +100,7 @@ export default function FilterSidebar({
                     name={field}
                   />
                 ))}
-            </FilterMenu>
+            </DropdownMenu>
           );
         })}
         <div className='w-full flex items-center justify-between gap-4'>
