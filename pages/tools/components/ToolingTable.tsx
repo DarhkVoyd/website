@@ -81,7 +81,9 @@ const ToolingTable = ({
                         </td>
                       )}
                       <td className='px-4 py-2 border-b border-gray-200'>
-                        {item.supportedDialects?.draft.join(', ')}
+                        {item.supportedDialects &&
+                          item.supportedDialects.draft &&
+                          item.supportedDialects.draft.join(', ')}
                       </td>
                       <td className='px-4 py-2 border-b border-gray-200'>
                         {item.license}
