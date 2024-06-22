@@ -52,7 +52,12 @@ export default function DropdownMenu({
         </svg>
       </div>
 
-      <div className={classnames('ml-0 mt-4', { hidden: !isDropdownOpen })}>
+      <div
+        className={classnames(
+          'ml-0 mt-4 overflow-x-hidden overscroll-y-auto max-h-80',
+          { hidden: !isDropdownOpen },
+        )}
+      >
         {children}
       </div>
     </div>
