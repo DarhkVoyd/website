@@ -5,15 +5,19 @@ import React, { ReactNode, useEffect, useState } from 'react';
 export default function DropdownMenu({
   children,
   label,
+  iconSrc,
+  iconAlt,
 }: {
   children: ReactNode;
   label: string;
+  iconSrc: string;
+  iconAlt: string;
 }) {
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    setIsFilterOpen(false);
+    setIsDropdownOpen(false);
   }, [router]);
 
   return (
@@ -21,14 +25,14 @@ export default function DropdownMenu({
       <div
         className='w-full flex justify-between items-center align-middle'
         onClick={() => {
-          setIsFilterOpen((prev) => !prev);
+          setIsDropdownOpen((prev) => !prev);
         }}
       >
-        <img src='/icons/filter.svg' alt='eye icon' className='mr-2' />
+        <img src={iconSrc} alt={iconAlt} className='mr-2' />
         <div className='text-slate-900 font-bold mr-auto'>{label}</div>
         <svg
           style={{
-            transform: `${isFilterOpen ? 'rotate(180deg)' : 'rotate(0)'}`,
+            transform: `${isDropdownOpen ? 'rotate(180deg)' : 'rotate(0)'}`,
             transition: 'all 0.2s linear',
             cursor: 'pointer',
           }}
@@ -48,7 +52,7 @@ export default function DropdownMenu({
         </svg>
       </div>
 
-      <div className={classnames('ml-0 mt-4', { hidden: !isFilterOpen })}>
+      <div className={classnames('ml-0 mt-4', { hidden: !isDropdownOpen })}>
         {children}
       </div>
     </div>

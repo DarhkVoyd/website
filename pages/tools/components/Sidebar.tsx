@@ -9,6 +9,7 @@ import {
 } from '../lib/getUniqueValuesPerField';
 import { type Preferences } from '../lib/usePreferences';
 import convertToTitleCase from '../lib/convertToTitleCase';
+import filterSVG from '~/public/icons/filter.svg';
 
 export default function FilterSidebar({
   uniqueValuesPerField,
@@ -59,7 +60,11 @@ export default function FilterSidebar({
   return (
     <div className='top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5'>
       <SearchBar preferences={preferences} setPreferences={setPreferences} />
-      <DropdownMenu label='View'>
+      <DropdownMenu
+        iconSrc='/icons/filter.svg'
+        iconAlt='Filter Icon'
+        label='View'
+      >
         <Radio
           label='All'
           value='all'
@@ -90,7 +95,12 @@ export default function FilterSidebar({
           const values = uniqueValuesPerField[field as Fields];
           const label = field.split('.').pop();
           return (
-            <DropdownMenu key={field} label={convertToTitleCase(label!)}>
+            <DropdownMenu
+              key={field}
+              label={convertToTitleCase(label!)}
+              iconSrc='/icons/filter.svg'
+              iconAlt='Filter Icon'
+            >
               {values &&
                 values.map((uniqueValue) => (
                   <Checkbox
