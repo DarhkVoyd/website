@@ -1,7 +1,7 @@
 import Fuse from 'fuse.js';
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { type Tooling } from './index.page';
+import { type Tooling } from './JSONSchemaTool';
 
 export interface Preferences {
   query: string;
@@ -101,7 +101,9 @@ export default function usePreferences(tools: Tooling[]) {
         if (
           !tool.languages ||
           !preferences.languages.some((lang) =>
-            tool.languages.some((l) => l.toLowerCase() === lang.toLowerCase()),
+            tool?.languages?.some(
+              (l) => l.toLowerCase() === lang.toLowerCase(),
+            ),
           )
         ) {
           return false;
@@ -112,7 +114,7 @@ export default function usePreferences(tools: Tooling[]) {
         if (
           !tool.license ||
           !preferences.license.some(
-            (license) => license.toLowerCase() === tool.license.toLowerCase(),
+            (license) => license.toLowerCase() === tool?.license?.toLowerCase(),
           )
         ) {
           return false;
@@ -175,15 +177,20 @@ export default function usePreferences(tools: Tooling[]) {
     return [...filteredHits].sort(compare);
   }, [filteredHits, preferences.sortBy]);
 
+  interface Data {
+    [key: string]: Tooling[];
+  }
+
   const preferredData = useMemo(() => {
-    const data = {};
+    const data: Data = {};
 
     if (preferences.viewBy === 'all') {
       data['all'] = sortedHits;
     } else {
       sortedHits.forEach((tool) => {
-        if (Array.isArray(tool[preferences.viewBy])) {
-          tool[preferences.viewBy].forEach((category) => {
+        const key = preferences.viewBy as keyof Tooling;
+        if (Array.isArray(tool[key])) {
+          (tool[key] as string[]).forEach((category) => {
             if (!data[category]) {
               data[category] = [];
             }
@@ -195,6 +202,7 @@ export default function usePreferences(tools: Tooling[]) {
 
     return data;
   }, [sortedHits, preferences.viewBy]);
+
   return {
     preferredData,
     numberOfEntries: filteredHits.length,
