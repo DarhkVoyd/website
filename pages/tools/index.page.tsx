@@ -62,8 +62,8 @@ export default function ToolingPage({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const {
-    preferredData,
-    numberOfEntries,
+    preferredTools,
+    numberOfTools,
     preferences,
     setPreferences,
     resetPreferences,
@@ -81,7 +81,7 @@ export default function ToolingPage({
             setIsSidebarOpen((prev) => !prev);
           }}
         >
-          <h3 className='text-white'>{numberOfEntries} Tools</h3>
+          <h3 className='text-white'>{numberOfTools} Tools</h3>
 
           <svg
             style={{
@@ -105,7 +105,7 @@ export default function ToolingPage({
           >
             <div className='hidden lg:block'>
               <h1 className='text-h1mobile md:text-h1 font-bold lg:ml-4 lg:mt-6'>
-                {numberOfEntries}
+                {numberOfTools}
               </h1>
               <div className='text-xl text-slate-900 font-bold lg:ml-6'>
                 Tools
@@ -139,7 +139,7 @@ export default function ToolingPage({
                 reporting results from other validators.
               </div>
             </div>
-            <ToolingTable tools={preferredData} preferences={preferences} />
+            <ToolingTable tools={preferredTools} preferences={preferences} />
           </main>
         </div>
       </div>

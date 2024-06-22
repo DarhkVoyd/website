@@ -67,14 +67,20 @@ export default function FilterSidebar({
           onChange={setViewPreference}
         />
         <Radio
-          label='Tooling Type'
+          label='Tooling Types'
           value='toolingTypes'
           selectedValue={viewBy}
           onChange={setViewPreference}
         />
         <Radio
-          label='Language'
+          label='Languages'
           value='languages'
+          selectedValue={viewBy}
+          onChange={setViewPreference}
+        />
+        <Radio
+          label='Environments'
+          value='environments'
           selectedValue={viewBy}
           onChange={setViewPreference}
         />
