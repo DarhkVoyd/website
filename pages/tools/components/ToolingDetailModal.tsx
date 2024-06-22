@@ -16,12 +16,15 @@ export default function ToolingDetailModal({
   }, []);
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center z-50'>
+    <div className='fixed inset-0 flex items-center justify-center z-50 overflow-x-hidden'>
       <div
         className='fixed inset-0 bg-black opacity-50'
         onClick={onClose}
       ></div>
-      <div className='bg-white rounded-lg p-8 max-w-4xl w-full relative z-50'>
+      <div
+        className='bg-white rounded-lg p-8 max-w-4xl w-full relative z-50 max-h-[80vh] overflow-y-auto'
+        style={{ overflowWrap: 'anywhere' }}
+      >
         <div className='flex justify-end absolute top-0 right-0 mt-4 mr-4'>
           <button
             onClick={onClose}
