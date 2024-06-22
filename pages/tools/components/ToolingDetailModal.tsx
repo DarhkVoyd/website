@@ -22,7 +22,7 @@ export default function ToolingDetailModal({
         onClick={onClose}
       ></div>
       <div
-        className='bg-white rounded-lg p-8 max-w-4xl w-full relative z-50 max-h-[80vh] overflow-y-auto'
+        className='bg-white rounded-lg p-8 max-w-full lg:max-w-4xl w-3/4 lg:w-full relative top-8 z-50 max-h-[80vh] overflow-y-auto'
         style={{ overflowWrap: 'anywhere' }}
       >
         <div className='flex justify-end absolute top-0 right-0 mt-4 mr-4'>
