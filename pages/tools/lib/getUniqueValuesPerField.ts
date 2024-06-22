@@ -1,4 +1,4 @@
-import { type Tooling } from './index.page';
+import { type Tooling } from './JSONSchemaTool';
 
 export type Fields = 'license' | 'languages' | 'supportedDialects.draft';
 
