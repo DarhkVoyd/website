@@ -9,9 +9,8 @@ import {
 } from '../lib/getUniqueValuesPerField';
 import { type Preferences } from '../lib/usePreferences';
 import convertToTitleCase from '../lib/convertToTitleCase';
-import filterSVG from '~/public/icons/filter.svg';
 
-export default function FilterSidebar({
+export default function Sidebar({
   uniqueValuesPerField,
   preferences,
   setPreferences,
@@ -113,16 +112,19 @@ export default function FilterSidebar({
             </DropdownMenu>
           );
         })}
-        <div className='w-full flex items-center justify-between gap-4'>
+        <div className='w-full flex items-center justify-between mt-4'>
+          <button
+            type='submit'
+            className='bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none'
+          >
+            Apply Filters
+          </button>
           <button
             type='button'
-            className='text-sm text-gray-600 italic hover:underline hover:text-gray-800 focus:outline-none'
+            className='bg-slate-200 text-gray-700 px-4 py-2 rounded hover:bg-slate-300 focus:outline-none'
             onClick={resetHandler}
           >
             Clear Filters
-          </button>
-          <button type='submit' className='bg-gray-300 px-4 py-2 rounded'>
-            Submit
           </button>
         </div>
       </form>
