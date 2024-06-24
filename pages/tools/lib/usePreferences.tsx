@@ -12,6 +12,10 @@ export interface Preferences {
   'supportedDialects.draft': string[];
 }
 
+export interface CategorisedTools {
+  [category: string]: Tooling[];
+}
+
 function getQueryParamValues(param: string | string[] | undefined): string[] {
   if (!param) return [];
 
@@ -187,10 +191,6 @@ export default function usePreferences(tools: Tooling[]) {
 
     return [...filteredHits].sort(compare);
   }, [filteredHits, preferences.sortBy]);
-
-  interface CategorisedTools {
-    [category: string]: Tooling[];
-  }
 
   const [categorisedTools, numberOfTools] = useMemo(() => {
     const categorisedTools: CategorisedTools = {};
