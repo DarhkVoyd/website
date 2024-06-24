@@ -24,6 +24,40 @@ const ToolingTable = ({
     setSelectedTool(null);
   };
 
+  const outlinkIcon = (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      className='w-5 h-5'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth='2'
+        d='M14 3h7m0 0v7m0-7L10 14m1-9H5a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-6'
+      />
+    </svg>
+  );
+
+  const notAvailableIcon = (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      className='w-5 h-5'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth='2'
+        d='M6 18L18 6M6 6l12 12'
+      />
+    </svg>
+  );
+
   return (
     <>
       {categories.map((category) => (
@@ -82,12 +116,17 @@ const ToolingTable = ({
                       {tool.license}
                     </td>
                     <td className='px-4 py-2 border-b border-gray-200'>
-                      <a
-                        href={`https://bowtie.report/#/implementations/${tool.bowtie?.identifier}`}
-                        target='blank'
-                      >
-                        Click Here
-                      </a>
+                      {tool.bowtie?.identifier ? (
+                        <a
+                          href={`https://bowtie.report/#/implementations/${tool.bowtie?.identifier}`}
+                          target='_blank'
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          {outlinkIcon}
+                        </a>
+                      ) : (
+                        <span>{notAvailableIcon}</span>
+                      )}
                     </td>
                   </tr>
                 ))}
