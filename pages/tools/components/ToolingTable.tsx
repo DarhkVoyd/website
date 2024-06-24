@@ -58,6 +58,15 @@ const ToolingTable = ({
     </svg>
   );
 
+  const columnStyles = {
+    name: { width: '20%' },
+    toolingType: { width: '20%' },
+    languages: { width: '20%' },
+    drafts: { width: '15%' },
+    license: { width: '15%' },
+    bowtie: { width: '10%' },
+  };
+
   return (
     <>
       {categories.map((category) => (
@@ -69,22 +78,46 @@ const ToolingTable = ({
             <table className='min-w-full bg-white border border-gray-200'>
               <thead>
                 <tr>
-                  <th className='px-4 py-2 border-b border-gray-200'>Name</th>
+                  <th
+                    className='px-4 py-2 border-b border-gray-200'
+                    style={columnStyles.name}
+                  >
+                    Name
+                  </th>
                   {preferences.viewBy !== 'toolingTypes' && (
-                    <th className='px-4 py-2 border-b border-gray-200'>
+                    <th
+                      className='px-4 py-2 border-b border-gray-200'
+                      style={columnStyles.toolingType}
+                    >
                       Tooling Type
                     </th>
                   )}
                   {preferences.viewBy !== 'languages' && (
-                    <th className='px-4 py-2 border-b border-gray-200'>
+                    <th
+                      className='px-4 py-2 border-b border-gray-200'
+                      style={columnStyles.languages}
+                    >
                       Languages
                     </th>
                   )}
-                  <th className='px-4 py-2 border-b border-gray-200'>Drafts</th>
-                  <th className='px-4 py-2 border-b border-gray-200'>
+                  <th
+                    className='px-4 py-2 border-b border-gray-200'
+                    style={columnStyles.drafts}
+                  >
+                    Drafts
+                  </th>
+                  <th
+                    className='px-4 py-2 border-b border-gray-200'
+                    style={columnStyles.license}
+                  >
                     License
                   </th>
-                  <th className='px-4 py-2 border-b border-gray-200'>Bowtie</th>
+                  <th
+                    className='px-4 py-2 border-b border-gray-200'
+                    style={columnStyles.bowtie}
+                  >
+                    Bowtie
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -94,32 +127,50 @@ const ToolingTable = ({
                     className='hover:bg-gray-100 cursor-pointer'
                     onClick={() => openModal(tool)}
                   >
-                    <td className='px-4 py-2 border-b border-gray-200 relative group'>
+                    <td
+                      className='px-4 py-2 border-b border-gray-200 relative group'
+                      style={columnStyles.name}
+                    >
                       {tool.name}
                     </td>
                     {preferences.viewBy !== 'toolingTypes' && (
-                      <td className='px-4 py-2 border-b border-gray-200'>
+                      <td
+                        className='px-4 py-2 border-b border-gray-200'
+                        style={columnStyles.toolingType}
+                      >
                         {tool.toolingTypes
                           ?.map((type) => convertToTitleCase(type, '-'))
                           .join(', ')}
                       </td>
                     )}
                     {preferences.viewBy !== 'languages' && (
-                      <td className='px-4 py-2 border-b border-gray-200'>
+                      <td
+                        className='px-4 py-2 border-b border-gray-200'
+                        style={columnStyles.languages}
+                      >
                         {tool.languages?.join(', ')}
                       </td>
                     )}
-                    <td className='px-4 py-2 border-b border-gray-200'>
+                    <td
+                      className='px-4 py-2 border-b border-gray-200'
+                      style={columnStyles.drafts}
+                    >
                       {tool.supportedDialects?.draft?.join(', ')}
                     </td>
-                    <td className='px-4 py-2 border-b border-gray-200'>
+                    <td
+                      className='px-4 py-2 border-b border-gray-200'
+                      style={columnStyles.license}
+                    >
                       {tool.license}
                     </td>
-                    <td className='px-4 py-2 border-b border-gray-200'>
+                    <td
+                      className='px-8 py-2 border-b border-gray-200'
+                      style={columnStyles.bowtie}
+                    >
                       {tool.bowtie?.identifier ? (
                         <a
                           href={`https://bowtie.report/#/implementations/${tool.bowtie?.identifier}`}
-                          target='_blank'
+                          target='blank'
                           onClick={(event) => event.stopPropagation()}
                         >
                           {outlinkIcon}
