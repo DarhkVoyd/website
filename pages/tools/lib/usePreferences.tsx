@@ -216,28 +216,20 @@ export default function usePreferences(tools: Tooling[]) {
       numberOfTools = sortedHits.length;
     } else {
       sortedHits.forEach((tool) => {
-        const groups = getFieldValue(tool, preferences.groupBy);
-        let groupLabelBase = '';
-
-        const groupByParts = preferences.groupBy.split('.');
-        if (groupByParts.length > 1) {
-          groupLabelBase = `${groupByParts.pop()}: `;
-        }
-
+        const group = getFieldValue(tool, preferences.groupBy);
         if (
-          groups !== undefined &&
+          group !== undefined &&
           !disabledViews.includes(preferences.groupBy)
         ) {
-          if (Array.isArray(groups)) {
-            (groups as string[]).forEach((group) => {
-              const groupLabel = groupLabelBase + group;
-              if (!groupedTools[groupLabel]) {
-                groupedTools[groupLabel] = [];
+          if (Array.isArray(group)) {
+            (group as string[]).forEach((group) => {
+              if (!groupedTools[group]) {
+                groupedTools[group] = [];
               }
-              groupedTools[groupLabel].push(tool);
+              groupedTools[group].push(tool);
             });
-          } else if (typeof groups === 'string') {
-            const stringValue = String(groups);
+          } else if (typeof group === 'string') {
+            const stringValue = String(group);
             if (!groupedTools[stringValue]) {
               groupedTools[stringValue] = [];
             }
