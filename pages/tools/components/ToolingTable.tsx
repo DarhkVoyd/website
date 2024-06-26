@@ -3,18 +3,18 @@ import { Headline2 } from '~/components/Headlines';
 import ToolingDetailModal from './ToolingDetailModal';
 import convertToTitleCase from '../lib/convertToTitleCase';
 import { type Tooling } from '../lib/JSONSchemaTool';
-import { type Preferences, type CategorisedTools } from '../lib/usePreferences';
+import { type Preferences, type GroupedTools } from '../lib/usePreferences';
 
 const ToolingTable = ({
-  categorisedTools,
+  groupedTools,
   preferences,
 }: {
-  categorisedTools: CategorisedTools;
+  groupedTools: GroupedTools;
   preferences: Preferences;
 }) => {
   const [selectedTool, setSelectedTool] = useState<Tooling | null>(null);
 
-  const categories = Object.keys(categorisedTools);
+  const groups = Object.keys(groupedTools);
 
   const openModal = (tool: Tooling) => {
     setSelectedTool(tool);
@@ -69,11 +69,15 @@ const ToolingTable = ({
 
   return (
     <>
-      {categories.map((category) => (
-        <section key={category} className='mb-12 text-left'>
-          <div className='my-10 px-4 w-full bg-gray-100'>
-            <Headline2>{convertToTitleCase(category, '-')}</Headline2>
-          </div>
+      {groups.map((group) => (
+        <section key={group} className='mb-12 text-left'>
+          {group !== 'none' && (
+            <div className='mb-10 px-4 w-full bg-gray-100'>
+              <Headline2 attributes={{ className: 'mt-[0px]' }}>
+                {convertToTitleCase(group, '-')}
+              </Headline2>
+            </div>
+          )}
           <div>
             <table className='min-w-full bg-white border border-gray-200'>
               <thead>
@@ -84,7 +88,7 @@ const ToolingTable = ({
                   >
                     Name
                   </th>
-                  {preferences.viewBy !== 'toolingTypes' && (
+                  {preferences.groupBy !== 'toolingTypes' && (
                     <th
                       className='px-4 py-2 border-b border-gray-200'
                       style={columnStyles.toolingType}
@@ -92,7 +96,7 @@ const ToolingTable = ({
                       Tooling Type
                     </th>
                   )}
-                  {preferences.viewBy !== 'languages' && (
+                  {preferences.groupBy !== 'languages' && (
                     <th
                       className='px-4 py-2 border-b border-gray-200'
                       style={columnStyles.languages}
@@ -121,7 +125,7 @@ const ToolingTable = ({
                 </tr>
               </thead>
               <tbody>
-                {categorisedTools[category].map((tool, index) => (
+                {groupedTools[group].map((tool, index) => (
                   <tr
                     key={index}
                     className='hover:bg-gray-100 cursor-pointer'
@@ -133,7 +137,7 @@ const ToolingTable = ({
                     >
                       {tool.name}
                     </td>
-                    {preferences.viewBy !== 'toolingTypes' && (
+                    {preferences.groupBy !== 'toolingTypes' && (
                       <td
                         className='px-4 py-2 border-b border-gray-200'
                         style={columnStyles.toolingType}
@@ -143,7 +147,7 @@ const ToolingTable = ({
                           .join(', ')}
                       </td>
                     )}
-                    {preferences.viewBy !== 'languages' && (
+                    {preferences.groupBy !== 'languages' && (
                       <td
                         className='px-4 py-2 border-b border-gray-200'
                         style={columnStyles.languages}

@@ -1,6 +1,5 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, useRef } from 'react';
+import React, { Dispatch, SetStateAction, useRef } from 'react';
 import DropdownMenu from './DropdownMenu';
-import Radio from './Radio';
 import SearchBar from './SearchBar';
 import Checkbox from './Checkbox';
 import {
@@ -22,31 +21,24 @@ export default function Sidebar({
   resetPreferences: () => void;
 }) {
   const filterFormRef = useRef<HTMLFormElement>(null);
-  const viewBy = preferences.viewBy;
-  const setViewPreference = (event: ChangeEvent<HTMLInputElement>) => {
-    setPreferences((prev) => ({
-      ...prev,
-      viewBy: event.target.value as typeof viewBy,
-    }));
-  };
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
     if (!filterFormRef.current) return;
     const formData = new FormData(filterFormRef.current);
-    const formValues: Record<string, string[]> = {};
 
     setPreferences((prev) => {
-      formData.forEach((value, key) => {
-        if (!formValues[key]) {
-          formValues[key] = [];
-        }
-        formValues[key].push(value as string);
-      });
-      return {
-        ...prev,
-        ...formValues,
+      const updatedPreferences: Preferences = {
+        query: (formData.get('query') as Preferences['query']) || '',
+        groupBy: prev.groupBy || 'toolingTypes',
+        sortBy: prev.sortBy || 'none',
+        languages: formData.getAll('languages').map((value) => value as string),
+        license: formData.getAll('license').map((value) => value as string),
+        'supportedDialects.draft': formData
+          .getAll('supportedDialects.draft')
+          .map((value) => value as string),
       };
+      return updatedPreferences;
     });
   };
 
@@ -58,38 +50,8 @@ export default function Sidebar({
 
   return (
     <div className='top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5'>
-      <SearchBar preferences={preferences} setPreferences={setPreferences} />
-      <DropdownMenu
-        iconSrc='/icons/filter.svg'
-        iconAlt='Filter Icon'
-        label='View'
-      >
-        <Radio
-          label='All'
-          value='all'
-          selectedValue={viewBy}
-          onChange={setViewPreference}
-        />
-        <Radio
-          label='Tooling Types'
-          value='toolingTypes'
-          selectedValue={viewBy}
-          onChange={setViewPreference}
-        />
-        <Radio
-          label='Languages'
-          value='languages'
-          selectedValue={viewBy}
-          onChange={setViewPreference}
-        />
-        <Radio
-          label='Environments'
-          value='environments'
-          selectedValue={viewBy}
-          onChange={setViewPreference}
-        />
-      </DropdownMenu>
       <form onSubmit={submitHandler} ref={filterFormRef} className='w-full'>
+        <SearchBar preferences={preferences} />
         {Object.keys(uniqueValuesPerField).map((field) => {
           const values = uniqueValuesPerField[field as Fields];
           const label = field.split('.').pop();

@@ -13,6 +13,7 @@ import getUniqueValuesPerField, {
 } from './lib/getUniqueValuesPerField';
 import usePreferences from './lib/usePreferences';
 import { Tooling } from './lib/JSONSchemaTool';
+import GroupSelector from './components/GroupBySelector';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
@@ -139,8 +140,12 @@ export default function ToolingPage({
                 reporting results from other validators.
               </div>
             </div>
+            <GroupSelector
+              preferences={preferences}
+              setPreferences={setPreferences}
+            />
             <ToolingTable
-              categorisedTools={preferredTools}
+              groupedTools={preferredTools}
               preferences={preferences}
             />
           </main>

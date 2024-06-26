@@ -5,15 +5,20 @@ import { type Tooling } from './JSONSchemaTool';
 
 export interface Preferences {
   query: string;
-  viewBy: 'all' | 'toolingTypes' | 'languages' | 'environments';
+  groupBy:
+    | 'none'
+    | 'toolingTypes'
+    | 'languages'
+    | 'environments'
+    | 'supportedDialects.draft';
   sortBy: 'none' | 'name.asc' | 'name.des' | 'license.asc' | 'license.des';
   license: string[];
   languages: string[];
   'supportedDialects.draft': string[];
 }
 
-export interface CategorisedTools {
-  [category: string]: Tooling[];
+export interface GroupedTools {
+  [group: string]: Tooling[];
 }
 
 function getQueryParamValues(param: string | string[] | undefined): string[] {
@@ -37,8 +42,8 @@ export default function usePreferences(tools: Tooling[]) {
 
   const initialPreferences: Preferences = {
     query: (searchParams.get('query') as Preferences['query']) || '',
-    viewBy:
-      (searchParams.get('viewBy') as Preferences['viewBy']) || 'toolingTypes',
+    groupBy:
+      (searchParams.get('groupBy') as Preferences['groupBy']) || 'toolingTypes',
     sortBy: (searchParams.get('sortBy') as Preferences['sortBy']) || 'none',
     languages: getQueryParamValues(searchParams.getAll('languages')),
     license: getQueryParamValues(searchParams.getAll('license')),
@@ -67,14 +72,14 @@ export default function usePreferences(tools: Tooling[]) {
   }, [preferences]);
 
   const resetPreferences = () => {
-    setPreferences({
+    setPreferences((prev) => ({
       query: '',
-      viewBy: 'toolingTypes',
+      groupBy: prev.groupBy,
       sortBy: 'none',
       languages: [],
       license: [],
       'supportedDialects.draft': [],
-    });
+    }));
     window.scrollTo(0, 0);
   };
 
@@ -192,8 +197,8 @@ export default function usePreferences(tools: Tooling[]) {
     return [...filteredHits].sort(compare);
   }, [filteredHits, preferences.sortBy]);
 
-  const [categorisedTools, numberOfTools] = useMemo(() => {
-    const categorisedTools: CategorisedTools = {};
+  const [groupedTools, numberOfTools] = useMemo(() => {
+    const groupedTools: GroupedTools = {};
     let numberOfTools = 0;
     const disabledViews = [
       'description',
@@ -206,40 +211,40 @@ export default function usePreferences(tools: Tooling[]) {
       'landspace.logo',
     ];
 
-    if (preferences.viewBy === 'all') {
-      categorisedTools['all'] = sortedHits;
+    if (preferences.groupBy === 'none') {
+      groupedTools['none'] = sortedHits;
       numberOfTools = sortedHits.length;
     } else {
       sortedHits.forEach((tool) => {
-        const category = getFieldValue(tool, preferences.viewBy);
+        const group = getFieldValue(tool, preferences.groupBy);
         if (
-          category !== undefined &&
-          !disabledViews.includes(preferences.viewBy)
+          group !== undefined &&
+          !disabledViews.includes(preferences.groupBy)
         ) {
-          if (Array.isArray(category)) {
-            (category as string[]).forEach((category) => {
-              if (!categorisedTools[category]) {
-                categorisedTools[category] = [];
+          if (Array.isArray(group)) {
+            (group as string[]).forEach((group) => {
+              if (!groupedTools[group]) {
+                groupedTools[group] = [];
               }
-              categorisedTools[category].push(tool);
+              groupedTools[group].push(tool);
             });
-          } else if (typeof category === 'string') {
-            const stringValue = String(category);
-            if (!categorisedTools[stringValue]) {
-              categorisedTools[stringValue] = [];
+          } else if (typeof group === 'string') {
+            const stringValue = String(group);
+            if (!groupedTools[stringValue]) {
+              groupedTools[stringValue] = [];
             }
-            categorisedTools[stringValue].push(tool);
+            groupedTools[stringValue].push(tool);
           }
           numberOfTools++;
         }
       });
     }
 
-    return [categorisedTools, numberOfTools];
-  }, [sortedHits, preferences.viewBy]);
+    return [groupedTools, numberOfTools];
+  }, [sortedHits, preferences.groupBy]);
 
   return {
-    preferredTools: categorisedTools,
+    preferredTools: groupedTools,
     numberOfTools,
     preferences,
     setPreferences,
