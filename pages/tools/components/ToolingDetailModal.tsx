@@ -23,7 +23,7 @@ export default function ToolingDetailModal({
         onClick={onClose}
       ></div>
       <div
-        className='bg-white rounded-lg p-8 max-w-full lg:max-w-4xl w-10/12 lg:w-full relative top-8 z-50 max-h-[80vh] overflow-y-auto'
+        className='bg-white dark:bg-slate-800 rounded-lg p-8 max-w-full lg:max-w-4xl w-10/12 lg:w-full relative top-8 z-50 max-h-[80vh] overflow-y-auto'
         style={{ overflowWrap: 'anywhere' }}
       >
         <div className='flex justify-end absolute top-0 right-0 mt-4 mr-4'>
@@ -43,7 +43,9 @@ export default function ToolingDetailModal({
         <div className='mt-4'>
           <h2 className='text-h1mobile md:text-h4 font-bold '>{tool.name}</h2>
           {tool.description && (
-            <p className='text-gray-600 mt-1 text-base'>{tool.description}</p>
+            <p className='text-gray-600 dark:text-slate-300 mt-1 text-base'>
+              {tool.description}
+            </p>
           )}
         </div>
         <div className='flex flex-col md:flex-row mt-6'>

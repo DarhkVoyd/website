@@ -27,14 +27,14 @@ export default function GroupSelector({
 
   return (
     <div className='ml-2 my-8 flex items-center space-x-2'>
-      <span className='text-slate-600'>GROUP BY:</span>
+      <span className='text-slate-600 dark:text-slate-300'>GROUP BY:</span>
       {Object.keys(groups).map((group) => {
         return (
           <button
             key={group}
             value={groups[group]}
             onClick={setGroupPreference}
-            className={`px-4 py-2 border rounded ${preferences.groupBy === groups[group] ? 'bg-primary text-white' : 'bg-white text-slate-600'}`}
+            className={`px-4 py-2 border dark:border-slate-800 rounded ${preferences.groupBy === groups[group] ? 'bg-primary text-white' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-200'}`}
           >
             {convertToTitleCase(group!)}
           </button>

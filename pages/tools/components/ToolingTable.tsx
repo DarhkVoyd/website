@@ -63,14 +63,14 @@ const ToolingTable = ({
       {groups.map((group) => (
         <section key={group} className='mb-12 text-left'>
           {group !== 'none' && (
-            <div className='mb-10 px-4 w-full bg-gray-100'>
+            <div className='mb-10 px-4 w-full bg-gray-100 dark:bg-slate-900'>
               <Headline2 attributes={{ className: 'mt-[0px]' }}>
                 {convertToTitleCase(group, '-')}
               </Headline2>
             </div>
           )}
           <div className='overflow-x-auto'>
-            <table className='min-w-full bg-white border border-gray-200'>
+            <table className='min-w-full bg-white dark:bg-slate-800 border border-gray-200'>
               <thead>
                 <tr>
                   <th className='px-4 py-2 border-b border-gray-200'>Name</th>
@@ -95,7 +95,7 @@ const ToolingTable = ({
                 {groupedTools[group].map((tool, index) => (
                   <tr
                     key={index}
-                    className='hover:bg-gray-100 cursor-pointer'
+                    className='hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer'
                     onClick={() => openModal(tool)}
                   >
                     <td className='px-4 py-2 border-b border-gray-200 relative group'>

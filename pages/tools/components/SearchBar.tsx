@@ -17,7 +17,7 @@ const SearchBar = ({ preferences }: { preferences: Preferences }) => {
       <div className='relative'>
         <input
           type='text'
-          className='w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300'
+          className='w-full px-4 py-2 border dark:border-slate-900 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 dark:bg-slate-900'
           placeholder='Search'
           name='query'
           value={query}

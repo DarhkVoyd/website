@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useRef } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import DropdownMenu from './DropdownMenu';
 import SearchBar from './SearchBar';
 import Checkbox from './Checkbox';
@@ -8,6 +14,7 @@ import {
 } from '../lib/getUniqueValuesPerField';
 import { type Preferences } from '../lib/usePreferences';
 import convertToTitleCase from '../lib/convertToTitleCase';
+import { useTheme } from 'next-themes';
 
 export default function Sidebar({
   uniqueValuesPerField,
@@ -23,6 +30,16 @@ export default function Sidebar({
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const filterFormRef = useRef<HTMLFormElement>(null);
+  const [filterIcon, setFilterIcon] = useState('');
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      setFilterIcon('/icons/filter-dark.svg');
+    } else {
+      setFilterIcon('/icons/filter.svg');
+    }
+  }, [theme]);
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +80,7 @@ export default function Sidebar({
             <DropdownMenu
               key={field}
               label={convertToTitleCase(label!)}
-              iconSrc='/icons/filter.svg'
+              iconSrc={filterIcon}
               iconAlt='Filter Icon'
             >
               {values &&
@@ -87,7 +104,7 @@ export default function Sidebar({
           </button>
           <button
             type='button'
-            className='bg-slate-200 text-gray-700 px-4 py-2 rounded hover:bg-slate-300 focus:outline-none'
+            className='bg-slate-200 dark:bg-slate-900 text-gray-700 dark:text-slate-200 px-4 py-2 rounded hover:bg-slate-300 focus:outline-none'
             onClick={resetHandler}
           >
             Clear Filters
