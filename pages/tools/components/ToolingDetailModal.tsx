@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { type Tooling } from '../lib/JSONSchemaTool';
 import convertToTitleCase from '../lib/convertToTitleCase';
-import Link from 'next/link';
 
 export default function ToolingDetailModal({
   tool,
@@ -206,7 +205,7 @@ export default function ToolingDetailModal({
                 <h3 className='text-lg font-semibold'>Tooling Types</h3>
                 <ul className='list-disc list-inside'>
                   {tool.toolingTypes.map((type, index) => (
-                    <li key={index}>{convertToTitleCase(type)}</li>
+                    <li key={index}>{convertToTitleCase(type, '-')}</li>
                   ))}
                 </ul>
               </div>
