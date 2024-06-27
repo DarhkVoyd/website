@@ -123,7 +123,7 @@ export default function ToolingPage({
           </div>
 
           <main
-            className={`md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0 ${isSidebarOpen ? 'hidden' : ''}`}
+            className={`md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0 ${isSidebarOpen ? 'hidden lg:block' : ''}`}
           >
             <Headline1>JSON Schema Tooling</Headline1>
             <p className='text-slate-600 block leading-7 pb-4 dark:text-slate-300'>
