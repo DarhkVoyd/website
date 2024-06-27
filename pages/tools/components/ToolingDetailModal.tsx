@@ -23,7 +23,7 @@ export default function ToolingDetailModal({
         onClick={onClose}
       ></div>
       <div
-        className='bg-white rounded-lg p-8 max-w-full lg:max-w-4xl w-3/4 lg:w-full relative top-8 z-50 max-h-[80vh] overflow-y-auto'
+        className='bg-white rounded-lg p-8 max-w-full lg:max-w-4xl w-10/12 lg:w-full relative top-8 z-50 max-h-[80vh] overflow-y-auto'
         style={{ overflowWrap: 'anywhere' }}
       >
         <div className='flex justify-end absolute top-0 right-0 mt-4 mr-4'>
@@ -46,8 +46,8 @@ export default function ToolingDetailModal({
             <p className='text-gray-600 mt-1 text-base'>{tool.description}</p>
           )}
         </div>
-        <div className='flex flex-row mt-6'>
-          <div className='w-1/2 pr-4'>
+        <div className='flex flex-col md:flex-row mt-6'>
+          <div className='w-full md:w-1/2 md:pr-4'>
             {tool.source && (
               <div className='mt-4'>
                 <h3 className='text-lg font-semibold'>Source</h3>
@@ -162,7 +162,7 @@ export default function ToolingDetailModal({
               </div>
             )}
           </div>
-          <div className='w-1/2 pl-4'>
+          <div className='w-full md:w-1/2 md:pl-4'>
             {tool.supportedDialects && (
               <div className='mt-4'>
                 <h3 className='text-lg font-semibold'>Supported Dialects</h3>
