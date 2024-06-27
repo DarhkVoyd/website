@@ -117,6 +117,7 @@ export default function ToolingPage({
               preferences={preferences}
               setPreferences={setPreferences}
               resetPreferences={resetPreferences}
+              setIsSidebarOpen={setIsSidebarOpen}
             />
           </div>
 

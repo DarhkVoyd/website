@@ -14,11 +14,13 @@ export default function Sidebar({
   preferences,
   setPreferences,
   resetPreferences,
+  setIsSidebarOpen,
 }: {
   uniqueValuesPerField: UniqueValuesPerField;
   preferences: Preferences;
   setPreferences: Dispatch<SetStateAction<Preferences>>;
   resetPreferences: () => void;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const filterFormRef = useRef<HTMLFormElement>(null);
 
@@ -40,12 +42,14 @@ export default function Sidebar({
       };
       return updatedPreferences;
     });
+    setIsSidebarOpen((prev) => (prev ? false : prev));
   };
 
   const resetHandler = () => {
     if (!filterFormRef.current) return;
     filterFormRef.current.reset();
     resetPreferences();
+    setIsSidebarOpen((prev) => (prev ? false : prev));
   };
 
   return (
