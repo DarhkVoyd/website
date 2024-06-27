@@ -13,7 +13,7 @@ import getUniqueValuesPerField, {
 } from './lib/getUniqueValuesPerField';
 import usePreferences from './lib/usePreferences';
 import { Tooling } from './lib/JSONSchemaTool';
-import GroupSelector from './components/GroupBySelector';
+import GroupBySelector from './components/GroupBySelector';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
@@ -102,7 +102,7 @@ export default function ToolingPage({
 
         <div className='grid grid-cols-1 lg:grid-cols-4 mx-4 md:mx-12'>
           <div
-            className={`absolute lg:static top-10 lg:top-auto left-0 lg:left-auto mt-24 w-screen lg:w-auto h-full lg:h-auto bg-white lg:bg-transparent transition-transform lg:transform-none duration-300 lg:duration-0 ease-in-out ${isSidebarOpen ? '-translate-x-0' : '-translate-x-full'} z-50`}
+            className={`absolute lg:static top-10 lg:top-auto left-0 lg:left-auto mt-24 w-screen lg:w-auto h-full lg:h-auto bg-white lg:bg-transparent transition-transform lg:transform-none duration-300 lg:duration-0 ease-in-out overflow-y-auto ${isSidebarOpen ? '-translate-x-0' : '-translate-x-full'} z-50`}
           >
             <div className='hidden lg:block'>
               <h1 className='text-h1mobile md:text-h1 font-bold lg:ml-4 lg:mt-6'>
@@ -120,11 +120,13 @@ export default function ToolingPage({
             />
           </div>
 
-          <main className='md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0'>
+          <main
+            className={`md:col-span-3 lg:mt-20 lg:w-5/6 mx-4 md:mx-0 ${isSidebarOpen ? 'hidden' : ''}`}
+          >
             <Headline1>JSON Schema Tooling</Headline1>
             <p className='text-slate-600 block leading-7 pb-4 dark:text-slate-300'>
               Toolings below are written in different languages, and support
-              part, or all, of at least one recent version of the specificiton.
+              part, or all, of at least one recent version of the specification.
             </p>
             <p className='text-slate-600 block leading-7 pb-4 dark:text-slate-300'>
               Listing does not signify a recommendation or endorsement of any
@@ -140,7 +142,7 @@ export default function ToolingPage({
                 reporting results from other validators.
               </div>
             </div>
-            <GroupSelector
+            <GroupBySelector
               preferences={preferences}
               setPreferences={setPreferences}
             />

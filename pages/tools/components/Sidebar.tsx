@@ -49,7 +49,7 @@ export default function Sidebar({
   };
 
   return (
-    <div className='top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5'>
+    <div className='pb-4 top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5 h-fit'>
       <form onSubmit={submitHandler} ref={filterFormRef} className='w-full'>
         <SearchBar preferences={preferences} />
         {Object.keys(uniqueValuesPerField).map((field) => {
