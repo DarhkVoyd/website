@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { Preferences } from '../lib/usePreferences';
 import convertToTitleCase from '../lib/convertToTitleCase';
 
-export default function GroupSelector({
+export default function GroupBySelector({
   preferences,
   setPreferences,
 }: {
@@ -26,7 +26,7 @@ export default function GroupSelector({
   };
 
   return (
-    <div className='ml-2 my-8 flex items-center space-x-2'>
+    <div className='ml-2 my-8 flex items-center space-x-2 max-w-screen overflow-x-auto'>
       <span className='text-slate-600 dark:text-slate-300'>GROUP BY:</span>
       {Object.keys(groups).map((group) => {
         return (
