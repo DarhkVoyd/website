@@ -78,7 +78,7 @@ const ToolingTable = ({
               </Headline2>
             </div>
           )}
-          <div>
+          <div className='overflow-x-auto'>
             <table className='min-w-full bg-white border border-gray-200'>
               <thead>
                 <tr>
