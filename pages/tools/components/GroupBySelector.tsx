@@ -22,7 +22,6 @@ export default function GroupBySelector({
     'Tooling Types': 'toolingTypes',
     Languages: 'languages',
     Environments: 'environments',
-    'Supported Dialects': 'supportedDialects.draft',
   };
 
   return (
