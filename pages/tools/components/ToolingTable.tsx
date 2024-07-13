@@ -88,7 +88,7 @@ const ToolingTable = ({
                     Name
                   </TableSortableColumnHeader>
                   {preferences.groupBy !== 'toolingTypes' && (
-                    <TableColumnHeader>JSONSchemaTool Type</TableColumnHeader>
+                    <TableColumnHeader>Tooling Type</TableColumnHeader>
                   )}
                   {preferences.groupBy !== 'languages' && (
                     <TableColumnHeader>Languages</TableColumnHeader>

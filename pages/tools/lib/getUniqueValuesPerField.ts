@@ -1,4 +1,4 @@
-import { type Tooling } from './JSONSchemaTool';
+import { JSONSchemaTool } from './JSONSchemaTool';
 
 export type Fields = 'license' | 'languages' | 'supportedDialects.draft';
 
@@ -13,7 +13,7 @@ const getFieldValue = (obj: any, path: string): any => {
 };
 
 const getUniqueValuesPerField = (
-  tools: Tooling[],
+  tools: JSONSchemaTool[],
   fields: Fields[],
   exclusions: Exclusions = {},
 ): UniqueValuesPerField => {
