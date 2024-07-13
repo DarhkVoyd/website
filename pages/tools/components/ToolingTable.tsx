@@ -81,7 +81,6 @@ const ToolingTable = ({
               <thead>
                 <tr>
                   <TableSortableColumnHeader
-                    key='name'
                     sortBy='name'
                     preferences={preferences}
                     setPreferences={setPreferences}
@@ -96,7 +95,6 @@ const ToolingTable = ({
                   )}
                   <TableColumnHeader>Drafts</TableColumnHeader>
                   <TableSortableColumnHeader
-                    key='license'
                     sortBy='license'
                     preferences={preferences}
                     setPreferences={setPreferences}

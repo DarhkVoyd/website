@@ -20,33 +20,32 @@ const TableSortableColumnHeader = ({
   children: ReactNode;
 }) => {
   const [isSortedBy, setIsSortedBy] = useState(preferences.sortBy === sortBy);
-  const [sortOrder, setSortOrder] = useState<Preferences['sortOrder']>('none');
 
   useEffect(() => {
     setIsSortedBy(preferences.sortBy === sortBy);
-    setSortOrder('none');
   }, [preferences.sortBy]);
 
-  const sortByColumn = () => {
-    setSortOrder((prevSortOrder) => {
+  const sortByColumn = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setPreferences((prevPreferences) => {
       const newSortOrder =
-        prevSortOrder === 'none' || prevSortOrder === 'descending'
-          ? 'ascending'
-          : 'descending';
-
-      setPreferences((prevPreferences) => ({
+        prevPreferences.sortBy === sortBy
+          ? prevPreferences.sortOrder === 'none' ||
+            prevPreferences.sortOrder === 'descending'
+            ? 'ascending'
+            : 'descending'
+          : 'ascending';
+      return {
         ...prevPreferences,
         sortBy,
         sortOrder: newSortOrder,
-      }));
-
-      return newSortOrder;
+      };
     });
 
     setIsSortedBy(true);
   };
 
-  const rotateClass = sortOrder === 'ascending' ? 'rotate-180' : '';
+  const rotateClass = preferences.sortOrder === 'ascending' ? 'rotate-180' : '';
 
   return (
     <TableColumnHeader>
