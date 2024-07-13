@@ -1,41 +1,24 @@
 import Fuse from 'fuse.js';
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { type Tooling } from './JSONSchemaTool';
+import { getQueryParamValues, type JSONSchemaTool } from '../lib';
+import { DRAFT_ORDER } from '~/lib/config';
 
 export interface Preferences {
   query: string;
-  groupBy:
-    | 'none'
-    | 'toolingTypes'
-    | 'languages'
-    | 'environments'
-    | 'supportedDialects.draft';
-  sortBy: 'none' | 'name.asc' | 'name.des' | 'license.asc' | 'license.des';
-  license: string[];
+  groupBy: 'none' | 'toolingTypes' | 'languages' | 'environments';
+  sortBy: 'none' | 'name' | 'license';
+  sortOrder: 'none' | 'ascending' | 'descending';
+  licenses: string[];
   languages: string[];
-  'supportedDialects.draft': string[];
+  drafts: `${(typeof DRAFT_ORDER)[number]}`[];
 }
 
 export interface GroupedTools {
-  [group: string]: Tooling[];
+  [group: string]: JSONSchemaTool[];
 }
 
-function getQueryParamValues(param: string | string[] | undefined): string[] {
-  if (!param) return [];
-
-  if (typeof param === 'string') {
-    return [decodeURIComponent(param)];
-  } else {
-    return param.map((p) => decodeURIComponent(p));
-  }
-}
-
-const getFieldValue = (obj: any, path: string): any => {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-};
-
-export default function usePreferences(tools: Tooling[]) {
+export default function usePreferences(tools: JSONSchemaTool[]) {
   const router = useRouter();
   const { asPath } = router;
   const searchParams = new URLSearchParams(asPath.split('?')[1]);
@@ -45,11 +28,13 @@ export default function usePreferences(tools: Tooling[]) {
     groupBy:
       (searchParams.get('groupBy') as Preferences['groupBy']) || 'toolingTypes',
     sortBy: (searchParams.get('sortBy') as Preferences['sortBy']) || 'none',
+    sortOrder:
+      (searchParams.get('sortOrder') as Preferences['sortOrder']) || 'none',
     languages: getQueryParamValues(searchParams.getAll('languages')),
-    license: getQueryParamValues(searchParams.getAll('license')),
-    'supportedDialects.draft': getQueryParamValues(
-      searchParams.getAll('supportedDialects.draft'),
-    ),
+    licenses: getQueryParamValues(searchParams.getAll('license')),
+    drafts: getQueryParamValues(
+      searchParams.getAll('drafts'),
+    ) as Preferences['drafts'],
   };
 
   const [preferences, setPreferences] =
@@ -76,9 +61,10 @@ export default function usePreferences(tools: Tooling[]) {
       query: '',
       groupBy: prev.groupBy,
       sortBy: 'none',
+      sortOrder: 'none',
       languages: [],
-      license: [],
-      'supportedDialects.draft': [],
+      licenses: [],
+      drafts: [],
     }));
     window.scrollTo(0, 0);
   };
@@ -102,144 +88,114 @@ export default function usePreferences(tools: Tooling[]) {
   const filteredHits = useMemo(() => {
     if (
       !preferences.languages &&
-      !preferences.license &&
-      !preferences['supportedDialects.draft']
+      !preferences.licenses &&
+      !preferences.drafts
     ) {
       return hits;
     }
 
-    return hits.filter((tool: Tooling) => {
+    return hits.filter((tool: JSONSchemaTool) => {
       if (preferences.languages && preferences.languages.length > 0) {
         if (
           !tool.languages ||
           !preferences.languages.some((lang) =>
-            tool?.languages?.some(
-              (l) => l.toLowerCase() === lang.toLowerCase(),
-            ),
+            tool.languages?.some((l) => l.toLowerCase() === lang.toLowerCase()),
           )
         ) {
           return false;
         }
       }
 
-      if (preferences.license && preferences.license.length > 0) {
+      if (preferences.licenses && preferences.licenses.length > 0) {
         if (
           !tool.license ||
-          !preferences.license.some(
-            (license) => license.toLowerCase() === tool?.license?.toLowerCase(),
+          !preferences.licenses.some(
+            (license) => license.toLowerCase() === tool.license?.toLowerCase(),
           )
         ) {
           return false;
         }
       }
 
-      if (
-        preferences['supportedDialects.draft'] &&
-        preferences['supportedDialects.draft'].length > 0
-      ) {
+      if (preferences.drafts && preferences.drafts.length > 0) {
         if (!tool.supportedDialects || !tool.supportedDialects.draft) {
           return false;
         }
         const toolDrafts = tool.supportedDialects.draft.map(String);
 
-        if (
-          !preferences['supportedDialects.draft'].some((draft) =>
-            toolDrafts.includes(draft),
-          )
-        ) {
+        if (!preferences.drafts.some((draft) => toolDrafts.includes(draft))) {
           return false;
         }
       }
 
       return true;
     });
-  }, [
-    hits,
-    preferences.languages,
-    preferences.license,
-    preferences['supportedDialects.draft'],
-  ]);
+  }, [hits, preferences.languages, preferences.licenses, preferences.drafts]);
 
   const sortedHits = useMemo(() => {
     if (preferences.sortBy === 'none') {
       return filteredHits;
     }
 
-    const compare = (a: Tooling, b: Tooling) => {
+    const compare = (a: JSONSchemaTool, b: JSONSchemaTool) => {
       let aValue, bValue;
 
       switch (preferences.sortBy) {
-        case 'name.asc':
-          aValue = a.name.toLowerCase();
+        case 'name':
           bValue = b.name.toLowerCase();
+          aValue = a.name.toLowerCase();
           break;
-        case 'name.des':
-          bValue = a.name.toLowerCase();
-          aValue = b.name.toLowerCase();
-          break;
-        case 'license.asc':
+        case 'license':
           aValue = a.license ? a.license.toLowerCase() : '';
           bValue = b.license ? b.license.toLowerCase() : '';
-          break;
-        case 'license.des':
-          bValue = a.license ? a.license.toLowerCase() : '';
-          aValue = b.license ? b.license.toLowerCase() : '';
           break;
         default:
           return 0;
       }
 
-      if (aValue < bValue) return -1;
-      if (aValue > bValue) return 1;
+      if (preferences.sortOrder === 'ascending') {
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+      } else if (preferences.sortOrder === 'descending') {
+        if (aValue > bValue) return -1;
+        if (aValue < bValue) return 1;
+      }
       return 0;
     };
 
     return [...filteredHits].sort(compare);
-  }, [filteredHits, preferences.sortBy]);
+  }, [filteredHits, preferences.sortBy, preferences.sortOrder]);
 
   const [groupedTools, numberOfTools] = useMemo(() => {
     const groupedTools: GroupedTools = {};
     let numberOfTools = 0;
-    const disabledViews = [
-      'description',
-      'source',
-      'homepage',
-      'toolingListingNotes',
-      'bowtie.identifier',
-      'compliance.config.docs',
-      'compliance.config.instructions',
-      'landspace.logo',
-    ];
 
-    if (preferences.groupBy === 'none') {
-      groupedTools['none'] = sortedHits;
-      numberOfTools = sortedHits.length;
-    } else {
+    if (
+      preferences.groupBy === 'toolingTypes' ||
+      preferences.groupBy === 'languages' ||
+      preferences.groupBy === 'environments'
+    ) {
       sortedHits.forEach((tool) => {
-        const group = getFieldValue(tool, preferences.groupBy);
-        if (
-          group !== undefined &&
-          !disabledViews.includes(preferences.groupBy)
-        ) {
-          if (Array.isArray(group)) {
-            (group as string[]).forEach((group) => {
-              if (!groupedTools[group]) {
-                groupedTools[group] = [];
-              }
-              groupedTools[group].push(tool);
-            });
-          } else if (typeof group === 'string') {
-            const stringValue = String(group);
-            if (!groupedTools[stringValue]) {
-              groupedTools[stringValue] = [];
+        const groupBy = preferences.groupBy as
+          | 'toolingTypes'
+          | 'languages'
+          | 'environments';
+        const groups = tool[groupBy];
+        if (groups !== undefined) {
+          groups.forEach((group) => {
+            if (!groupedTools[group]) {
+              groupedTools[group] = [];
             }
-            groupedTools[stringValue].push(tool);
-          }
+            groupedTools[group].push(tool);
+          });
+
           numberOfTools++;
         }
       });
+    } else {
+      groupedTools['none'] = sortedHits;
+      numberOfTools = sortedHits.length;
     }
-
     return [groupedTools, numberOfTools];
   }, [sortedHits, preferences.groupBy]);
 

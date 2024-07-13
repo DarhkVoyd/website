@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import { type Tooling } from '../lib/JSONSchemaTool';
 import convertToTitleCase from '../lib/convertToTitleCase';
+import Badge from './ui/Badge';
+import type { JSONSchemaTool } from '../lib';
 
 export default function ToolingDetailModal({
   tool,
   onClose,
 }: {
-  tool: Tooling;
+  tool: JSONSchemaTool;
   onClose: () => void;
 }) {
   useEffect(() => {
@@ -172,8 +173,8 @@ export default function ToolingDetailModal({
                   <div className='mt-2'>
                     <h4 className='font-semibold'>Draft:</h4>
                     <ul className='list-disc list-inside'>
-                      {tool.supportedDialects.draft.map((draft, index) => (
-                        <li key={index}>{draft}</li>
+                      {tool.supportedDialects.draft.map((draft) => (
+                        <Badge key={draft}>{draft}</Badge>
                       ))}
                     </ul>
                   </div>

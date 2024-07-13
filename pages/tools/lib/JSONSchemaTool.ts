@@ -1,4 +1,4 @@
-export interface Tooling {
+export interface JSONSchemaTool {
   name: string;
   description?: string;
   toolingTypes: string[];

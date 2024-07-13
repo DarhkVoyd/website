@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Preferences } from '../lib/usePreferences';
 import convertToTitleCase from '../lib/convertToTitleCase';
+import { Preferences } from '../hooks/usePreferences';
 
 export default function GroupBySelector({
   preferences,

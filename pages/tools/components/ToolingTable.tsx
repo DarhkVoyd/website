@@ -1,22 +1,29 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Headline2 } from '~/components/Headlines';
+import {
+  TableColumnHeader,
+  TableSortableColumnHeader,
+  TableCell,
+} from './Table';
 import ToolingDetailModal from './ToolingDetailModal';
-import convertToTitleCase from '../lib/convertToTitleCase';
-import { type Tooling } from '../lib/JSONSchemaTool';
-import { type Preferences, type GroupedTools } from '../lib/usePreferences';
+import Badge from './ui/Badge';
+import type { GroupedTools, Preferences } from '../hooks/usePreferences';
+import { type JSONSchemaTool, convertToTitleCase } from '../lib';
 
 const ToolingTable = ({
   groupedTools,
   preferences,
+  setPreferences,
 }: {
   groupedTools: GroupedTools;
   preferences: Preferences;
+  setPreferences: Dispatch<SetStateAction<Preferences>>;
 }) => {
-  const [selectedTool, setSelectedTool] = useState<Tooling | null>(null);
+  const [selectedTool, setSelectedTool] = useState<JSONSchemaTool | null>(null);
 
   const groups = Object.keys(groupedTools);
 
-  const openModal = (tool: Tooling) => {
+  const openModal = (tool: JSONSchemaTool) => {
     setSelectedTool(tool);
   };
 
@@ -73,53 +80,57 @@ const ToolingTable = ({
             <table className='min-w-full bg-white dark:bg-slate-800 border border-gray-200'>
               <thead>
                 <tr>
-                  <th className='px-4 py-2 border-b border-gray-200'>Name</th>
+                  <TableSortableColumnHeader
+                    key='name'
+                    sortBy='name'
+                    preferences={preferences}
+                    setPreferences={setPreferences}
+                  >
+                    Name
+                  </TableSortableColumnHeader>
                   {preferences.groupBy !== 'toolingTypes' && (
-                    <th className='px-4 py-2 border-b border-gray-200'>
-                      Tooling Type
-                    </th>
+                    <TableColumnHeader>JSONSchemaTool Type</TableColumnHeader>
                   )}
                   {preferences.groupBy !== 'languages' && (
-                    <th className='px-4 py-2 border-b border-gray-200'>
-                      Languages
-                    </th>
+                    <TableColumnHeader>Languages</TableColumnHeader>
                   )}
-                  <th className='px-4 py-2 border-b border-gray-200'>Drafts</th>
-                  <th className='px-4 py-2 border-b border-gray-200'>
+                  <TableColumnHeader>Drafts</TableColumnHeader>
+                  <TableSortableColumnHeader
+                    key='license'
+                    sortBy='license'
+                    preferences={preferences}
+                    setPreferences={setPreferences}
+                  >
                     License
-                  </th>
-                  <th className='px-4 py-2 border-b border-gray-200'>Bowtie</th>
+                  </TableSortableColumnHeader>
+                  <TableColumnHeader>Bowtie</TableColumnHeader>
                 </tr>
               </thead>
               <tbody>
-                {groupedTools[group].map((tool, index) => (
+                {groupedTools[group].map((tool: JSONSchemaTool, index) => (
                   <tr
                     key={index}
                     className='hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer'
                     onClick={() => openModal(tool)}
                   >
-                    <td className='px-4 py-2 border-b border-gray-200 relative group'>
-                      {tool.name}
-                    </td>
+                    <TableCell>{tool.name}</TableCell>
                     {preferences.groupBy !== 'toolingTypes' && (
-                      <td className='px-4 py-2 border-b border-gray-200'>
+                      <TableCell>
                         {tool.toolingTypes
                           ?.map((type) => convertToTitleCase(type, '-'))
                           .join(', ')}
-                      </td>
+                      </TableCell>
                     )}
                     {preferences.groupBy !== 'languages' && (
-                      <td className='px-4 py-2 border-b border-gray-200'>
-                        {tool.languages?.join(', ')}
-                      </td>
+                      <TableCell>{tool.languages?.join(', ')}</TableCell>
                     )}
-                    <td className='px-4 py-2 border-b border-gray-200'>
-                      {tool.supportedDialects?.draft?.join(', ')}
-                    </td>
-                    <td className='px-4 py-2 border-b border-gray-200'>
-                      {tool.license}
-                    </td>
-                    <td className='px-8 py-2 border-b border-gray-200'>
+                    <TableCell>
+                      {tool.supportedDialects?.draft?.map((draft) => {
+                        return <Badge key={draft}>{draft}</Badge>;
+                      })}
+                    </TableCell>
+                    <TableCell>{tool.license}</TableCell>
+                    <TableCell>
                       {tool.bowtie?.identifier ? (
                         <a
                           href={`https://bowtie.report/#/implementations/${tool.bowtie?.identifier}`}
@@ -131,7 +142,7 @@ const ToolingTable = ({
                       ) : (
                         <span>{notAvailableIcon}</span>
                       )}
-                    </td>
+                    </TableCell>
                   </tr>
                 ))}
               </tbody>

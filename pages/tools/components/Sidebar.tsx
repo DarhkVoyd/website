@@ -5,16 +5,16 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import DropdownMenu from './DropdownMenu';
+import DropdownMenu from './ui/DropdownMenu';
 import SearchBar from './SearchBar';
-import Checkbox from './Checkbox';
+import Checkbox from './ui/Checkbox';
 import {
   type Fields,
   type UniqueValuesPerField,
 } from '../lib/getUniqueValuesPerField';
-import { type Preferences } from '../lib/usePreferences';
 import convertToTitleCase from '../lib/convertToTitleCase';
 import { useTheme } from 'next-themes';
+import { Preferences } from '../hooks/usePreferences';
 
 export default function Sidebar({
   uniqueValuesPerField,
@@ -51,11 +51,12 @@ export default function Sidebar({
         query: (formData.get('query') as Preferences['query']) || '',
         groupBy: prev.groupBy || 'toolingTypes',
         sortBy: prev.sortBy || 'none',
+        sortOrder: prev.sortOrder || 'none',
         languages: formData.getAll('languages').map((value) => value as string),
-        license: formData.getAll('license').map((value) => value as string),
-        'supportedDialects.draft': formData
+        licenses: formData.getAll('license').map((value) => value as string),
+        drafts: formData
           .getAll('supportedDialects.draft')
-          .map((value) => value as string),
+          .map((value) => value) as Preferences['drafts'],
       };
       return updatedPreferences;
     });

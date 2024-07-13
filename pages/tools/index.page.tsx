@@ -11,14 +11,14 @@ import { DRAFT_ORDER } from '~/lib/config';
 import getUniqueValuesPerField, {
   UniqueValuesPerField,
 } from './lib/getUniqueValuesPerField';
-import usePreferences from './lib/usePreferences';
-import { Tooling } from './lib/JSONSchemaTool';
 import GroupBySelector from './components/GroupBySelector';
+import { JSONSchemaTool } from './lib';
+import usePreferences from './hooks/usePreferences';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
     fs.readFileSync('data/tooling-data.yaml', 'utf-8'),
-  ) as Tooling[];
+  ) as JSONSchemaTool[];
 
   const exclusions = {
     'supportedDialects.draft': new Set(['1', '2', '3']),
@@ -57,7 +57,7 @@ export default function ToolingPage({
   toolingData,
   uniqueValuesPerField,
 }: {
-  toolingData: Tooling[];
+  toolingData: JSONSchemaTool[];
   uniqueValuesPerField: UniqueValuesPerField;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -151,6 +151,7 @@ export default function ToolingPage({
             <ToolingTable
               groupedTools={preferredTools}
               preferences={preferences}
+              setPreferences={setPreferences}
             />
           </main>
         </div>
