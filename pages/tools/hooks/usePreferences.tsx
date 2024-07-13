@@ -192,6 +192,15 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
           numberOfTools++;
         }
       });
+
+      const sortedGroupedTools = Object.keys(groupedTools)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+        .reduce((acc, key) => {
+          acc[key] = groupedTools[key];
+          return acc;
+        }, {} as GroupedTools);
+
+      return [sortedGroupedTools, numberOfTools];
     } else {
       groupedTools['none'] = sortedHits;
       numberOfTools = sortedHits.length;
