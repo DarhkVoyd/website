@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { type Preferences } from '../lib/usePreferences';
+import type { Preferences } from '../hooks/usePreferences';
 
 const SearchBar = ({ preferences }: { preferences: Preferences }) => {
   const [query, setQuery] = useState(preferences.query);
