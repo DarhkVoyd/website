@@ -65,6 +65,33 @@ const ToolingTable = ({
     </svg>
   );
 
+  // Define width configurations for different cases
+  const columnWidths = {
+    allPresent: {
+      name: 'w-[25%]',
+      toolingType: 'w-[20%]',
+      languages: 'w-[20%]',
+      drafts: 'w-[15%]',
+      license: 'w-[10%]',
+      bowtie: 'w-[10%]',
+    },
+    oneAbsent: {
+      name: 'w-[30%]',
+      otherColumn: 'w-[25%]',
+      drafts: 'w-[20%]',
+      license: 'w-[15%]',
+      bowtie: 'w-[10%]',
+    },
+  };
+
+  // Determine which width configuration to use based on preferences
+  const currentWidths =
+    preferences.groupBy === 'toolingTypes'
+      ? columnWidths.oneAbsent
+      : preferences.groupBy === 'languages'
+        ? columnWidths.oneAbsent
+        : columnWidths.allPresent;
+
   return (
     <>
       {groups.map((group) => (
@@ -84,24 +111,34 @@ const ToolingTable = ({
                     sortBy='name'
                     preferences={preferences}
                     setPreferences={setPreferences}
+                    className={currentWidths.name}
                   >
                     Name
                   </TableSortableColumnHeader>
                   {preferences.groupBy !== 'toolingTypes' && (
-                    <TableColumnHeader>Tooling Type</TableColumnHeader>
+                    <TableColumnHeader className={currentWidths.toolingType}>
+                      Tooling Type
+                    </TableColumnHeader>
                   )}
                   {preferences.groupBy !== 'languages' && (
-                    <TableColumnHeader>Languages</TableColumnHeader>
+                    <TableColumnHeader className={currentWidths.languages}>
+                      Languages
+                    </TableColumnHeader>
                   )}
-                  <TableColumnHeader>Drafts</TableColumnHeader>
+                  <TableColumnHeader className={currentWidths.drafts}>
+                    Drafts
+                  </TableColumnHeader>
                   <TableSortableColumnHeader
                     sortBy='license'
                     preferences={preferences}
                     setPreferences={setPreferences}
+                    className={currentWidths.license}
                   >
                     License
                   </TableSortableColumnHeader>
-                  <TableColumnHeader>Bowtie</TableColumnHeader>
+                  <TableColumnHeader className={currentWidths.bowtie}>
+                    Bowtie
+                  </TableColumnHeader>
                 </tr>
               </thead>
               <tbody>
@@ -111,24 +148,30 @@ const ToolingTable = ({
                     className='hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer'
                     onClick={() => openModal(tool)}
                   >
-                    <TableCell>{tool.name}</TableCell>
+                    <TableCell className={currentWidths.name}>
+                      {tool.name}
+                    </TableCell>
                     {preferences.groupBy !== 'toolingTypes' && (
-                      <TableCell>
+                      <TableCell className={currentWidths.toolingType}>
                         {tool.toolingTypes
                           ?.map((type) => convertToTitleCase(type, '-'))
                           .join(', ')}
                       </TableCell>
                     )}
                     {preferences.groupBy !== 'languages' && (
-                      <TableCell>{tool.languages?.join(', ')}</TableCell>
+                      <TableCell className={currentWidths.languages}>
+                        {tool.languages?.join(', ')}
+                      </TableCell>
                     )}
-                    <TableCell>
+                    <TableCell className={currentWidths.drafts}>
                       {tool.supportedDialects?.draft?.map((draft) => {
                         return <Badge key={draft}>{draft}</Badge>;
                       })}
                     </TableCell>
-                    <TableCell>{tool.license}</TableCell>
-                    <TableCell>
+                    <TableCell className={currentWidths.license}>
+                      {tool.license}
+                    </TableCell>
+                    <TableCell className={currentWidths.bowtie}>
                       {tool.bowtie?.identifier ? (
                         <a
                           href={`https://bowtie.report/#/implementations/${tool.bowtie?.identifier}`}

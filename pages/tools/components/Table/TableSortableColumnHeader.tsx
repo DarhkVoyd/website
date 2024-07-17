@@ -9,11 +9,13 @@ import TableColumnHeader from './TableColumnHeader';
 import { Preferences } from '../../hooks/usePreferences';
 
 const TableSortableColumnHeader = ({
+  className,
   sortBy,
   preferences,
   setPreferences,
   children,
 }: {
+  className: string;
   sortBy: Preferences['sortBy'];
   preferences: Preferences;
   setPreferences: Dispatch<SetStateAction<Preferences>>;
@@ -48,7 +50,7 @@ const TableSortableColumnHeader = ({
   const rotateClass = preferences.sortOrder === 'ascending' ? 'rotate-180' : '';
 
   return (
-    <TableColumnHeader>
+    <TableColumnHeader className={className}>
       <button
         className='flex items-center focus:outline-none'
         onClick={sortByColumn}
