@@ -12,7 +12,7 @@ export type UniqueValuesPerField = Partial<Record<Fields, string[]>>;
 const getUniqueValuesPerField = (
   data: JSONSchemaTool[],
   path: string,
-  exclude: string[] = [],
+  exclude: Array<string | number> = [],
 ) => {
   const values = Array.from(new Set(jsonpath.query(data, path)));
   return values.filter((value) => !exclude.includes(value));

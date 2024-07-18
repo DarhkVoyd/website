@@ -25,7 +25,7 @@ export async function getStaticProps() {
     'supportedDialects.draft': getUniqueValuesPerField(
       toolingData,
       '$..supportedDialects.draft[*]',
-      ['1', '2', '3'],
+      [1, 2, 3],
     ),
     toolingTypes: getUniqueValuesPerField(toolingData, '$..toolingTypes[*]'),
     license: getUniqueValuesPerField(toolingData, '$..license'),
