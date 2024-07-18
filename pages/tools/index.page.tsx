@@ -20,15 +20,16 @@ export async function getStaticProps() {
     fs.readFileSync('data/tooling-data.yaml', 'utf-8'),
   ) as JSONSchemaTool[];
 
-  const exclusions = {
-    'supportedDialects.draft': new Set(['1', '2', '3']),
+  const uniqueValuesPerField = {
+    languages: getUniqueValuesPerField(toolingData, '$..languages[*]'),
+    'supportedDialects.draft': getUniqueValuesPerField(
+      toolingData,
+      '$..supportedDialects.draft[*]',
+      ['1', '2', '3'],
+    ),
+    toolingTypes: getUniqueValuesPerField(toolingData, '$..toolingTypes[*]'),
+    license: getUniqueValuesPerField(toolingData, '$..license'),
   };
-
-  const uniqueValuesPerField = getUniqueValuesPerField(
-    toolingData,
-    ['languages', 'supportedDialects.draft', 'toolingTypes', 'license'],
-    exclusions,
-  );
 
   uniqueValuesPerField['supportedDialects.draft']?.sort((a, b) => {
     const aIndex = DRAFT_ORDER.map(String).indexOf(a);
