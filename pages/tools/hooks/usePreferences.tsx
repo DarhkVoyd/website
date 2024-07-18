@@ -1,9 +1,11 @@
-import Fuse from 'fuse.js';
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Fuse from 'fuse.js';
+
 import { DRAFT_ORDER } from '~/lib/config';
-import { type JSONSchemaTool } from '../JSONSchemaTool';
+
 import getQueryParamValues from '../lib/getQueryParamValues';
+import { type JSONSchemaTool } from '../JSONSchemaTool';
 
 export interface Preferences {
   query: string;
@@ -94,7 +96,8 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
     if (
       !preferences.languages &&
       !preferences.licenses &&
-      !preferences.drafts
+      !preferences.drafts &&
+      !preferences.toolingTypes
     ) {
       return hits;
     }
