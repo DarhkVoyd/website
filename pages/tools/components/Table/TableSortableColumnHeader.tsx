@@ -32,8 +32,7 @@ const TableSortableColumnHeader = ({
     setPreferences((prevPreferences) => {
       const newSortOrder =
         prevPreferences.sortBy === sortBy
-          ? prevPreferences.sortOrder === 'none' ||
-            prevPreferences.sortOrder === 'descending'
+          ? prevPreferences.sortOrder === 'descending'
             ? 'ascending'
             : 'descending'
           : 'ascending';

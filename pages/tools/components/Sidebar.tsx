@@ -50,8 +50,8 @@ export default function Sidebar({
       const updatedPreferences: Preferences = {
         query: (formData.get('query') as Preferences['query']) || '',
         groupBy: prev.groupBy || 'toolingTypes',
-        sortBy: prev.sortBy || 'none',
-        sortOrder: prev.sortOrder || 'none',
+        sortBy: prev.sortBy || 'name',
+        sortOrder: prev.sortOrder || 'ascending',
         languages: formData.getAll('languages').map((value) => value as string),
         licenses: formData.getAll('license').map((value) => value as string),
         drafts: formData

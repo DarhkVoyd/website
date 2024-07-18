@@ -26,7 +26,7 @@ export async function getStaticProps() {
 
   const uniqueValuesPerField = getUniqueValuesPerField(
     toolingData,
-    ['license', 'supportedDialects.draft', 'languages'],
+    ['languages', 'supportedDialects.draft', 'toolingTypes', 'license'],
     exclusions,
   );
 

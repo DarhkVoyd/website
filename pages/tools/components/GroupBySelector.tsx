@@ -14,8 +14,8 @@ export default function GroupBySelector({
     setPreferences((prev) => ({
       ...prev,
       groupBy: (event.target as HTMLButtonElement).value as typeof groupBy,
-      sortBy: 'none',
-      sortOrder: 'none',
+      sortBy: 'name',
+      sortOrder: 'ascending',
     }));
   };
 

@@ -77,7 +77,8 @@ const ToolingTable = ({
     },
     oneAbsent: {
       name: 'w-[30%]',
-      otherColumn: 'w-[25%]',
+      toolingType: 'w-[25%]',
+      languages: 'w-[25%]',
       drafts: 'w-[20%]',
       license: 'w-[15%]',
       bowtie: 'w-[10%]',

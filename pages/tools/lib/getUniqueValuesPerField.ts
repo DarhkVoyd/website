@@ -1,6 +1,10 @@
 import { JSONSchemaTool } from './JSONSchemaTool';
 
-export type Fields = 'license' | 'languages' | 'supportedDialects.draft';
+export type Fields =
+  | 'languages'
+  | 'supportedDialects.draft'
+  | 'toolingTypes'
+  | 'license';
 
 export interface Exclusions {
   [field: string]: Set<string>;

@@ -7,8 +7,8 @@ import { DRAFT_ORDER } from '~/lib/config';
 export interface Preferences {
   query: string;
   groupBy: 'none' | 'toolingTypes' | 'languages' | 'environments';
-  sortBy: 'none' | 'name' | 'license';
-  sortOrder: 'none' | 'ascending' | 'descending';
+  sortBy: 'name' | 'license';
+  sortOrder: 'ascending' | 'descending';
   licenses: string[];
   languages: string[];
   drafts: `${(typeof DRAFT_ORDER)[number]}`[];
@@ -27,9 +27,10 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
     query: (searchParams.get('query') as Preferences['query']) || '',
     groupBy:
       (searchParams.get('groupBy') as Preferences['groupBy']) || 'toolingTypes',
-    sortBy: (searchParams.get('sortBy') as Preferences['sortBy']) || 'none',
+    sortBy: (searchParams.get('sortBy') as Preferences['sortBy']) || 'name',
     sortOrder:
-      (searchParams.get('sortOrder') as Preferences['sortOrder']) || 'none',
+      (searchParams.get('sortOrder') as Preferences['sortOrder']) ||
+      'ascending',
     languages: getQueryParamValues(searchParams.getAll('languages')),
     licenses: getQueryParamValues(searchParams.getAll('license')),
     drafts: getQueryParamValues(
@@ -60,8 +61,8 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
     setPreferences((prev) => ({
       query: '',
       groupBy: prev.groupBy,
-      sortBy: 'none',
-      sortOrder: 'none',
+      sortBy: 'name',
+      sortOrder: 'ascending',
       languages: [],
       licenses: [],
       drafts: [],
@@ -133,10 +134,6 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
   }, [hits, preferences.languages, preferences.licenses, preferences.drafts]);
 
   const sortedHits = useMemo(() => {
-    if (preferences.sortBy === 'none') {
-      return filteredHits;
-    }
-
     const compare = (a: JSONSchemaTool, b: JSONSchemaTool) => {
       let aValue, bValue;
 
