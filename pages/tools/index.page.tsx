@@ -2,18 +2,21 @@ import React, { useState } from 'react';
 import fs from 'fs';
 import Head from 'next/head';
 import yaml from 'js-yaml';
-import { Headline1 } from '~/components/Headlines';
+
 import { SectionContext } from '~/context';
 import { getLayout } from '~/components/SiteLayout';
+import { DRAFT_ORDER } from '~/lib/config';
+import { Headline1 } from '~/components/Headlines';
+
 import Sidebar from './components/Sidebar';
 import ToolingTable from './components/ToolingTable';
-import { DRAFT_ORDER } from '~/lib/config';
+import GroupBySelector from './components/GroupBySelector';
+import usePreferences from './hooks/usePreferences';
+
+import { type JSONSchemaTool } from './JSONSchemaTool';
 import getUniqueValuesPerField, {
   UniqueValuesPerField,
 } from './lib/getUniqueValuesPerField';
-import GroupBySelector from './components/GroupBySelector';
-import { JSONSchemaTool } from './lib';
-import usePreferences from './hooks/usePreferences';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(

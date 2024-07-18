@@ -8,7 +8,8 @@ import {
 import ToolingDetailModal from './ToolingDetailModal';
 import Badge from './ui/Badge';
 import type { GroupedTools, Preferences } from '../hooks/usePreferences';
-import { type JSONSchemaTool, convertToTitleCase } from '../lib';
+import { JSONSchemaTool } from '../JSONSchemaTool';
+import toTitleCase from '../lib/toTitleCase';
 
 const ToolingTable = ({
   groupedTools,
@@ -100,7 +101,7 @@ const ToolingTable = ({
           {group !== 'none' && (
             <div className='mb-10 px-4 w-full bg-gray-100 dark:bg-slate-900'>
               <Headline2 attributes={{ className: 'mt-[0px]' }}>
-                {convertToTitleCase(group, '-')}
+                {toTitleCase(group, '-')}
               </Headline2>
             </div>
           )}
@@ -155,7 +156,7 @@ const ToolingTable = ({
                     {preferences.groupBy !== 'toolingTypes' && (
                       <TableCell className={currentWidths.toolingType}>
                         {tool.toolingTypes
-                          ?.map((type) => convertToTitleCase(type, '-'))
+                          ?.map((type) => toTitleCase(type, '-'))
                           .join(', ')}
                       </TableCell>
                     )}

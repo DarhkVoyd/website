@@ -1,8 +1,9 @@
 import Fuse from 'fuse.js';
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { getQueryParamValues, type JSONSchemaTool } from '../lib';
 import { DRAFT_ORDER } from '~/lib/config';
+import { type JSONSchemaTool } from '../JSONSchemaTool';
+import getQueryParamValues from '../lib/getQueryParamValues';
 
 export interface Preferences {
   query: string;

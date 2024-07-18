@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import convertToTitleCase from '../lib/convertToTitleCase';
+import toTitleCase from '../lib/toTitleCase';
 import { Preferences } from '../hooks/usePreferences';
 
 export default function GroupBySelector({
@@ -37,7 +37,7 @@ export default function GroupBySelector({
             onClick={setGroupPreference}
             className={`px-4 py-2 border dark:border-slate-800 rounded ${preferences.groupBy === groups[group] ? 'bg-primary text-white' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-200'}`}
           >
-            {convertToTitleCase(group!)}
+            {toTitleCase(group!)}
           </button>
         );
       })}

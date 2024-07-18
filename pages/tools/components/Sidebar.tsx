@@ -9,7 +9,7 @@ import DropdownMenu from './ui/DropdownMenu';
 import SearchBar from './SearchBar';
 import Checkbox from './ui/Checkbox';
 import { type UniqueValuesPerField } from '../lib/getUniqueValuesPerField';
-import convertToTitleCase from '../lib/convertToTitleCase';
+import toTitleCase from '../lib/toTitleCase';
 import { useTheme } from 'next-themes';
 import { Preferences } from '../hooks/usePreferences';
 
@@ -106,7 +106,7 @@ export default function Sidebar({
           {uniqueValuesPerField.toolingTypes?.map((uniqueValue) => (
             <Checkbox
               key={uniqueValue}
-              label={convertToTitleCase(uniqueValue, '-')}
+              label={toTitleCase(uniqueValue, '-')}
               value={uniqueValue}
               name='toolingTypes'
             />

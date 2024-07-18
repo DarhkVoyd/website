@@ -1,5 +1,5 @@
-import { JSONSchemaTool } from './JSONSchemaTool';
 import jsonpath from 'jsonpath';
+import { type JSONSchemaTool } from '../JSONSchemaTool';
 
 export type Fields = 'languages' | 'drafts' | 'toolingTypes' | 'licenses';
 

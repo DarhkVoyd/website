@@ -1,4 +1,4 @@
-export default function convertToTitleCase(
+export default function toTitleCase(
   text: string,
   delimiter: string = ' ',
   separator: string = ' ',
