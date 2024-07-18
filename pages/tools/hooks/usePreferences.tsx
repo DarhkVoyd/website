@@ -1,9 +1,8 @@
-import { useMemo, useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useMemo, useState, useEffect, useCallback } from 'react';
+import { NextRouter, useRouter } from 'next/router';
 import Fuse from 'fuse.js';
 
 import { DRAFT_ORDER } from '~/lib/config';
-
 import getQueryParamValues from '../lib/getQueryParamValues';
 import { type JSONSchemaTool } from '../JSONSchemaTool';
 
@@ -22,47 +21,143 @@ export interface GroupedTools {
   [group: string]: JSONSchemaTool[];
 }
 
+const getInitialPreferences = (searchParams: URLSearchParams): Preferences => ({
+  query: (searchParams.get('query') as Preferences['query']) || '',
+  groupBy:
+    (searchParams.get('groupBy') as Preferences['groupBy']) || 'toolingTypes',
+  sortBy: (searchParams.get('sortBy') as Preferences['sortBy']) || 'name',
+  sortOrder:
+    (searchParams.get('sortOrder') as Preferences['sortOrder']) || 'ascending',
+  languages: getQueryParamValues(searchParams.getAll('languages')),
+  licenses: getQueryParamValues(searchParams.getAll('license')),
+  drafts: getQueryParamValues(
+    searchParams.getAll('drafts'),
+  ) as Preferences['drafts'],
+  toolingTypes: getQueryParamValues(searchParams.getAll('toolingTypes')),
+});
+
+const updateURLParams = (preferences: Preferences, router: NextRouter) => {
+  const params = new URLSearchParams();
+  Object.entries(preferences).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((val) => params.append(key, val));
+    } else {
+      params.set(key, value);
+    }
+  });
+  router.replace({ query: params.toString() }, undefined, { shallow: true });
+};
+
+const filterTools = (
+  tools: JSONSchemaTool[],
+  preferences: Preferences,
+): JSONSchemaTool[] => {
+  const lowerCaseArray = (arr: string[]) =>
+    arr.map((item) => item.toLowerCase());
+  const lowerCasePreferences = {
+    languages: lowerCaseArray(preferences.languages),
+    licenses: lowerCaseArray(preferences.licenses),
+    toolingTypes: lowerCaseArray(preferences.toolingTypes),
+    drafts: preferences.drafts.map(String),
+  };
+
+  return tools.filter((tool) => {
+    const matchesLanguage =
+      lowerCasePreferences.languages.length === 0 ||
+      (tool.languages || []).some((lang) =>
+        lowerCasePreferences.languages.includes(lang.toLowerCase()),
+      );
+
+    const matchesLicense =
+      lowerCasePreferences.licenses.length === 0 ||
+      (tool.license &&
+        lowerCasePreferences.licenses.includes(tool.license.toLowerCase()));
+
+    const matchesToolingType =
+      lowerCasePreferences.toolingTypes.length === 0 ||
+      (tool.toolingTypes || []).some((type) =>
+        lowerCasePreferences.toolingTypes.includes(type.toLowerCase()),
+      );
+
+    const matchesDraft =
+      lowerCasePreferences.drafts.length === 0 ||
+      (tool.supportedDialects?.draft || []).some((draft) =>
+        lowerCasePreferences.drafts.includes(String(draft)),
+      );
+
+    return (
+      matchesLanguage && matchesLicense && matchesToolingType && matchesDraft
+    );
+  });
+};
+
+const sortTools = (
+  tools: JSONSchemaTool[],
+  preferences: Preferences,
+): JSONSchemaTool[] => {
+  const compare = (a: JSONSchemaTool, b: JSONSchemaTool) => {
+    const aValue =
+      preferences.sortBy === 'name'
+        ? a.name.toLowerCase()
+        : (a.license || '').toLowerCase();
+    const bValue =
+      preferences.sortBy === 'name'
+        ? b.name.toLowerCase()
+        : (b.license || '').toLowerCase();
+    return preferences.sortOrder === 'ascending'
+      ? aValue.localeCompare(bValue)
+      : bValue.localeCompare(aValue);
+  };
+  return [...tools].sort(compare);
+};
+
+const groupTools = (
+  tools: JSONSchemaTool[],
+  groupBy: Preferences['groupBy'],
+): [GroupedTools, numberOfTools: number] => {
+  const groupedTools: GroupedTools = {};
+  let numberOfTools = 0;
+
+  if (groupBy === 'none') {
+    groupedTools['none'] = tools;
+    return [groupedTools, tools.length];
+  }
+
+  tools.forEach((tool) => {
+    const groups = tool[groupBy] || [];
+    if (groups.length > 0) {
+      groups.forEach((group) => {
+        if (!groupedTools[group]) groupedTools[group] = [];
+        groupedTools[group].push(tool);
+      });
+      numberOfTools++;
+    }
+  });
+
+  const sortedGroupedTools = Object.keys(groupedTools)
+    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    .reduce((acc, key) => {
+      acc[key] = groupedTools[key];
+      return acc;
+    }, {} as GroupedTools);
+
+  return [sortedGroupedTools, numberOfTools];
+};
+
 export default function usePreferences(tools: JSONSchemaTool[]) {
   const router = useRouter();
   const { asPath } = router;
   const searchParams = new URLSearchParams(asPath.split('?')[1]);
-
-  const initialPreferences: Preferences = {
-    query: (searchParams.get('query') as Preferences['query']) || '',
-    groupBy:
-      (searchParams.get('groupBy') as Preferences['groupBy']) || 'toolingTypes',
-    sortBy: (searchParams.get('sortBy') as Preferences['sortBy']) || 'name',
-    sortOrder:
-      (searchParams.get('sortOrder') as Preferences['sortOrder']) ||
-      'ascending',
-    languages: getQueryParamValues(searchParams.getAll('languages')),
-    licenses: getQueryParamValues(searchParams.getAll('license')),
-    drafts: getQueryParamValues(
-      searchParams.getAll('drafts'),
-    ) as Preferences['drafts'],
-    toolingTypes: getQueryParamValues(searchParams.getAll('toolingTypes')),
-  };
+  const initialPreferences = getInitialPreferences(searchParams);
 
   const [preferences, setPreferences] =
     useState<Preferences>(initialPreferences);
 
   useEffect(() => {
-    const params = new URLSearchParams();
-
-    Object.entries(preferences).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        if (Array.isArray(value)) {
-          value.forEach((val) => params.append(key, val));
-        } else {
-          params.set(key, value);
-        }
-      }
-    });
-
-    router.replace({ query: params.toString() }, undefined, { shallow: true });
+    updateURLParams(preferences, router);
   }, [preferences]);
 
-  const resetPreferences = () => {
+  const resetPreferences = useCallback(() => {
     setPreferences((prev) => ({
       query: '',
       groupBy: prev.groupBy,
@@ -74,156 +169,32 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
       toolingTypes: [],
     }));
     window.scrollTo(0, 0);
-  };
+  }, []);
 
-  const fuse = useMemo(() => {
-    return new Fuse(tools, {
-      keys: ['name'],
-      includeScore: true,
-      threshold: 0.3,
-    });
-  }, [tools]);
-
-  const hits = useMemo(() => {
-    if (preferences.query.trim() === '') {
-      return tools;
-    } else {
-      return fuse.search(preferences.query).map((result) => result.item);
-    }
-  }, [fuse, preferences.query, tools]);
-
-  const filteredHits = useMemo(() => {
-    if (
-      !preferences.languages &&
-      !preferences.licenses &&
-      !preferences.drafts &&
-      !preferences.toolingTypes
-    ) {
-      return hits;
-    }
-
-    return hits.filter((tool: JSONSchemaTool) => {
-      if (preferences.languages && preferences.languages.length > 0) {
-        if (
-          !tool.languages ||
-          !preferences.languages.some((lang) =>
-            tool.languages?.some((l) => l.toLowerCase() === lang.toLowerCase()),
-          )
-        ) {
-          return false;
-        }
-      }
-
-      if (preferences.licenses && preferences.licenses.length > 0) {
-        if (
-          !tool.license ||
-          !preferences.licenses.some(
-            (license) => license.toLowerCase() === tool.license?.toLowerCase(),
-          )
-        ) {
-          return false;
-        }
-      }
-
-      if (preferences.toolingTypes && preferences.toolingTypes.length > 0) {
-        if (
-          !tool.toolingTypes ||
-          !preferences.toolingTypes.some((toolingType) =>
-            tool.toolingTypes?.some(
-              (t) => t.toLowerCase() === toolingType.toLowerCase(),
-            ),
-          )
-        ) {
-          return false;
-        }
-      }
-
-      if (preferences.drafts && preferences.drafts.length > 0) {
-        if (!tool.supportedDialects || !tool.supportedDialects.draft) {
-          return false;
-        }
-        const toolDrafts = tool.supportedDialects.draft.map(String);
-
-        if (!preferences.drafts.some((draft) => toolDrafts.includes(draft))) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }, [hits, preferences.languages, preferences.licenses, preferences.drafts]);
-
-  const sortedHits = useMemo(() => {
-    const compare = (a: JSONSchemaTool, b: JSONSchemaTool) => {
-      let aValue, bValue;
-
-      switch (preferences.sortBy) {
-        case 'name':
-          bValue = b.name.toLowerCase();
-          aValue = a.name.toLowerCase();
-          break;
-        case 'license':
-          aValue = a.license ? a.license.toLowerCase() : '';
-          bValue = b.license ? b.license.toLowerCase() : '';
-          break;
-        default:
-          return 0;
-      }
-
-      if (preferences.sortOrder === 'ascending') {
-        if (aValue < bValue) return -1;
-        if (aValue > bValue) return 1;
-      } else if (preferences.sortOrder === 'descending') {
-        if (aValue > bValue) return -1;
-        if (aValue < bValue) return 1;
-      }
-      return 0;
-    };
-
-    return [...filteredHits].sort(compare);
-  }, [filteredHits, preferences.sortBy, preferences.sortOrder]);
-
-  const [groupedTools, numberOfTools] = useMemo(() => {
-    const groupedTools: GroupedTools = {};
-    let numberOfTools = 0;
-
-    if (
-      preferences.groupBy === 'toolingTypes' ||
-      preferences.groupBy === 'languages' ||
-      preferences.groupBy === 'environments'
-    ) {
-      sortedHits.forEach((tool) => {
-        const groupBy = preferences.groupBy as
-          | 'toolingTypes'
-          | 'languages'
-          | 'environments';
-        const groups = tool[groupBy];
-        if (groups !== undefined) {
-          groups.forEach((group) => {
-            if (!groupedTools[group]) {
-              groupedTools[group] = [];
-            }
-            groupedTools[group].push(tool);
-          });
-
-          numberOfTools++;
-        }
-      });
-
-      const sortedGroupedTools = Object.keys(groupedTools)
-        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-        .reduce((acc, key) => {
-          acc[key] = groupedTools[key];
-          return acc;
-        }, {} as GroupedTools);
-
-      return [sortedGroupedTools, numberOfTools];
-    } else {
-      groupedTools['none'] = sortedHits;
-      numberOfTools = sortedHits.length;
-    }
-    return [groupedTools, numberOfTools];
-  }, [sortedHits, preferences.groupBy]);
+  const fuse = useMemo(
+    () =>
+      new Fuse(tools, { keys: ['name'], includeScore: true, threshold: 0.3 }),
+    [tools],
+  );
+  const hits = useMemo(
+    () =>
+      preferences.query.trim() === ''
+        ? tools
+        : fuse.search(preferences.query).map((result) => result.item),
+    [fuse, preferences.query, tools],
+  );
+  const filteredHits = useMemo(
+    () => filterTools(hits, preferences),
+    [hits, preferences],
+  );
+  const sortedHits = useMemo(
+    () => sortTools(filteredHits, preferences),
+    [filteredHits, preferences],
+  );
+  const [groupedTools, numberOfTools] = useMemo(
+    () => groupTools(sortedHits, preferences.groupBy),
+    [sortedHits, preferences.groupBy],
+  );
 
   return {
     preferredTools: groupedTools,
