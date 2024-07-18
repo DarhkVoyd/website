@@ -1,11 +1,7 @@
 import { JSONSchemaTool } from './JSONSchemaTool';
 import jsonpath from 'jsonpath';
 
-export type Fields =
-  | 'languages'
-  | 'supportedDialects.draft'
-  | 'toolingTypes'
-  | 'license';
+export type Fields = 'languages' | 'drafts' | 'toolingTypes' | 'licenses';
 
 export type UniqueValuesPerField = Partial<Record<Fields, string[]>>;
 

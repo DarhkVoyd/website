@@ -22,16 +22,16 @@ export async function getStaticProps() {
 
   const uniqueValuesPerField = {
     languages: getUniqueValuesPerField(toolingData, '$..languages[*]'),
-    'supportedDialects.draft': getUniqueValuesPerField(
+    drafts: getUniqueValuesPerField(
       toolingData,
       '$..supportedDialects.draft[*]',
       [1, 2, 3],
     ),
     toolingTypes: getUniqueValuesPerField(toolingData, '$..toolingTypes[*]'),
-    license: getUniqueValuesPerField(toolingData, '$..license'),
+    licenses: getUniqueValuesPerField(toolingData, '$..license'),
   };
 
-  uniqueValuesPerField['supportedDialects.draft']?.sort((a, b) => {
+  uniqueValuesPerField.drafts?.sort((a, b) => {
     const aIndex = DRAFT_ORDER.map(String).indexOf(a);
     const bIndex = DRAFT_ORDER.map(String).indexOf(b);
 

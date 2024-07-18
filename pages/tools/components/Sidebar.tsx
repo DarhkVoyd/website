@@ -50,9 +50,9 @@ export default function Sidebar({
         sortBy: prev.sortBy || 'name',
         sortOrder: prev.sortOrder || 'ascending',
         languages: formData.getAll('languages').map((value) => value as string),
-        licenses: formData.getAll('license').map((value) => value as string),
+        licenses: formData.getAll('licenses').map((value) => value as string),
         drafts: formData
-          .getAll('supportedDialects.draft')
+          .getAll('drafts')
           .map((value) => value) as Preferences['drafts'],
         toolingTypes: formData
           .getAll('toolingTypes')
@@ -84,21 +84,19 @@ export default function Sidebar({
               key={uniqueValue}
               label={uniqueValue}
               value={uniqueValue}
-              name={'languages'}
+              name='languages'
             />
           ))}
         </DropdownMenu>
         <DropdownMenu label='Drafts' iconSrc={filterIcon} iconAlt='Filter Icon'>
-          {uniqueValuesPerField['supportedDialects.draft']?.map(
-            (uniqueValue) => (
-              <Checkbox
-                key={uniqueValue}
-                label={uniqueValue}
-                value={uniqueValue}
-                name={'supportedDialects.draft'}
-              />
-            ),
-          )}
+          {uniqueValuesPerField.drafts?.map((uniqueValue) => (
+            <Checkbox
+              key={uniqueValue}
+              label={uniqueValue}
+              value={uniqueValue}
+              name='drafts'
+            />
+          ))}
         </DropdownMenu>
         <DropdownMenu
           label='Tooling Types'
@@ -110,7 +108,7 @@ export default function Sidebar({
               key={uniqueValue}
               label={convertToTitleCase(uniqueValue, '-')}
               value={uniqueValue}
-              name={'toolingTypes'}
+              name='toolingTypes'
             />
           ))}
         </DropdownMenu>
@@ -119,12 +117,12 @@ export default function Sidebar({
           iconSrc={filterIcon}
           iconAlt='Filter Icon'
         >
-          {uniqueValuesPerField.license?.map((uniqueValue) => (
+          {uniqueValuesPerField.licenses?.map((uniqueValue) => (
             <Checkbox
               key={uniqueValue}
               label={uniqueValue}
               value={uniqueValue}
-              name='license'
+              name='licenses'
             />
           ))}
         </DropdownMenu>
