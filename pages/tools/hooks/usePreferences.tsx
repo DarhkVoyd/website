@@ -185,11 +185,17 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
   );
   const filteredHits = useMemo(
     () => filterTools(hits, preferences),
-    [hits, preferences],
+    [
+      hits,
+      preferences.languages,
+      preferences.drafts,
+      preferences.toolingTypes,
+      preferences.licenses,
+    ],
   );
   const sortedHits = useMemo(
     () => sortTools(filteredHits, preferences),
-    [filteredHits, preferences],
+    [filteredHits, preferences.sortBy, preferences.sortOrder],
   );
   const [groupedTools, numberOfTools] = useMemo(
     () => groupTools(sortedHits, preferences.groupBy),
