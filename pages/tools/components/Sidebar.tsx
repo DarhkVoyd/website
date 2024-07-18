@@ -8,10 +8,7 @@ import React, {
 import DropdownMenu from './ui/DropdownMenu';
 import SearchBar from './SearchBar';
 import Checkbox from './ui/Checkbox';
-import {
-  type Fields,
-  type UniqueValuesPerField,
-} from '../lib/getUniqueValuesPerField';
+import { type UniqueValuesPerField } from '../lib/getUniqueValuesPerField';
 import convertToTitleCase from '../lib/convertToTitleCase';
 import { useTheme } from 'next-themes';
 import { Preferences } from '../hooks/usePreferences';
@@ -57,6 +54,9 @@ export default function Sidebar({
         drafts: formData
           .getAll('supportedDialects.draft')
           .map((value) => value) as Preferences['drafts'],
+        toolingTypes: formData
+          .getAll('toolingTypes')
+          .map((value) => value as string),
       };
       return updatedPreferences;
     });
@@ -74,28 +74,60 @@ export default function Sidebar({
     <div className='pb-4 top-12 mx-auto lg:ml-4 lg:mt-8 w-4/5 h-fit'>
       <form onSubmit={submitHandler} ref={filterFormRef} className='w-full'>
         <SearchBar preferences={preferences} />
-        {Object.keys(uniqueValuesPerField).map((field) => {
-          const values = uniqueValuesPerField[field as Fields];
-          const label = field.split('.').pop();
-          return (
-            <DropdownMenu
-              key={field}
-              label={convertToTitleCase(label!)}
-              iconSrc={filterIcon}
-              iconAlt='Filter Icon'
-            >
-              {values &&
-                values.map((uniqueValue) => (
-                  <Checkbox
-                    key={uniqueValue}
-                    label={uniqueValue}
-                    value={uniqueValue}
-                    name={field}
-                  />
-                ))}
-            </DropdownMenu>
-          );
-        })}
+        <DropdownMenu
+          label='Languages'
+          iconSrc={filterIcon}
+          iconAlt='Filter Icon'
+        >
+          {uniqueValuesPerField.languages?.map((uniqueValue) => (
+            <Checkbox
+              key={uniqueValue}
+              label={uniqueValue}
+              value={uniqueValue}
+              name={'languages'}
+            />
+          ))}
+        </DropdownMenu>
+        <DropdownMenu label='Drafts' iconSrc={filterIcon} iconAlt='Filter Icon'>
+          {uniqueValuesPerField['supportedDialects.draft']?.map(
+            (uniqueValue) => (
+              <Checkbox
+                key={uniqueValue}
+                label={uniqueValue}
+                value={uniqueValue}
+                name={'supportedDialects.draft'}
+              />
+            ),
+          )}
+        </DropdownMenu>
+        <DropdownMenu
+          label='Tooling Types'
+          iconSrc={filterIcon}
+          iconAlt='Filter Icon'
+        >
+          {uniqueValuesPerField.toolingTypes?.map((uniqueValue) => (
+            <Checkbox
+              key={uniqueValue}
+              label={convertToTitleCase(uniqueValue, '-')}
+              value={uniqueValue}
+              name={'toolingTypes'}
+            />
+          ))}
+        </DropdownMenu>
+        <DropdownMenu
+          label='License'
+          iconSrc={filterIcon}
+          iconAlt='Filter Icon'
+        >
+          {uniqueValuesPerField.license?.map((uniqueValue) => (
+            <Checkbox
+              key={uniqueValue}
+              label={uniqueValue}
+              value={uniqueValue}
+              name='license'
+            />
+          ))}
+        </DropdownMenu>
         <div className='w-full flex items-center justify-between mt-4'>
           <button
             type='submit'

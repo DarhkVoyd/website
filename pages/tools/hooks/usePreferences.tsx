@@ -12,6 +12,7 @@ export interface Preferences {
   licenses: string[];
   languages: string[];
   drafts: `${(typeof DRAFT_ORDER)[number]}`[];
+  toolingTypes: string[];
 }
 
 export interface GroupedTools {
@@ -36,6 +37,7 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
     drafts: getQueryParamValues(
       searchParams.getAll('drafts'),
     ) as Preferences['drafts'],
+    toolingTypes: getQueryParamValues(searchParams.getAll('toolingTypes')),
   };
 
   const [preferences, setPreferences] =
@@ -66,6 +68,7 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
       languages: [],
       licenses: [],
       drafts: [],
+      toolingTypes: [],
     }));
     window.scrollTo(0, 0);
   };
@@ -112,6 +115,19 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
           !tool.license ||
           !preferences.licenses.some(
             (license) => license.toLowerCase() === tool.license?.toLowerCase(),
+          )
+        ) {
+          return false;
+        }
+      }
+
+      if (preferences.toolingTypes && preferences.toolingTypes.length > 0) {
+        if (
+          !tool.toolingTypes ||
+          !preferences.toolingTypes.some((toolingType) =>
+            tool.toolingTypes?.some(
+              (t) => t.toLowerCase() === toolingType.toLowerCase(),
+            ),
           )
         ) {
           return false;
