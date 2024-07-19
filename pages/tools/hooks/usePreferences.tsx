@@ -111,6 +111,31 @@ const sortTools = (
   return [...tools].sort(compare);
 };
 
+const toolingTypesOrder = [
+  'validator',
+  'hyper-schema',
+  'benchmarks',
+  'documentation',
+  'LDO-utility',
+  'code-to-schema',
+  'data-to-schema',
+  'model-to-schema',
+  'schema-to-types',
+  'schema-to-code',
+  'schema-to-web-UI',
+  'schema-to-data',
+  'util-general-processing',
+  'util-schema-to-schema',
+  'util-draft-migration',
+  'util-format-conversion',
+  'util-testing',
+  'editor',
+  'editor-plugins',
+  'schema-repository',
+  'linter',
+  'linter-plugins',
+];
+
 const groupTools = (
   tools: JSONSchemaTool[],
   groupBy: Preferences['groupBy'],
@@ -135,7 +160,17 @@ const groupTools = (
   });
 
   const sortedGroupedTools = Object.keys(groupedTools)
-    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    .sort((a, b) => {
+      if (groupBy === 'toolingTypes') {
+        const indexA = toolingTypesOrder.indexOf(a);
+        const indexB = toolingTypesOrder.indexOf(b);
+        if (indexA === -1 || indexB === -1) {
+          return a.toLowerCase().localeCompare(b.toLowerCase());
+        }
+        return indexA - indexB;
+      }
+      return a.toLowerCase().localeCompare(b.toLowerCase());
+    })
     .reduce((acc, key) => {
       acc[key] = groupedTools[key];
       return acc;
@@ -185,13 +220,7 @@ export default function usePreferences(tools: JSONSchemaTool[]) {
   );
   const filteredHits = useMemo(
     () => filterTools(hits, preferences),
-    [
-      hits,
-      preferences.languages,
-      preferences.drafts,
-      preferences.toolingTypes,
-      preferences.licenses,
-    ],
+    [hits, preferences],
   );
   const sortedHits = useMemo(
     () => sortTools(filteredHits, preferences),
