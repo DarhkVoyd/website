@@ -17,6 +17,7 @@ import { type JSONSchemaTool } from './JSONSchemaTool';
 import getUniqueValuesPerField, {
   UniqueValuesPerField,
 } from './lib/getUniqueValuesPerField';
+import Link from 'next/link';
 
 export async function getStaticProps() {
   const toolingData = yaml.load(
@@ -138,14 +139,38 @@ export default function ToolingPage({
               Listing does not signify a recommendation or endorsement of any
               kind.
             </p>
-            <div className='w-full grid grid-cols-1 lg:grid-cols-2'>
-              <div>
-                Raise an issue and we'll add your tool to the data we use to
-                build this website
+            <div className='flex flex-row items-center gap-2 w-full'>
+              <div className='flex items-center gap-2 w-1/2'>
+                <Link
+                  className='flex-none max-w-full'
+                  href='https://github.com/json-schema-org/website/issues/'
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  <img
+                    src='/img/tools/adding_your_tool.png'
+                    className='rounded-sm'
+                  />
+                </Link>
+                <p className='hidden lg:block text-slate-600 dark:text-slate-300'>
+                  Raise an issue and we'll add your tool to the data we use to
+                  build this website
+                </p>
               </div>
-              <div>
-                Bowtie is a meta-validator for JSON Schema, coordinating and
-                reporting results from other validators.
+
+              <div className='flex items-center gap-2 w-1/2'>
+                <Link
+                  className='flex-none max-w-full'
+                  href='https://bowtie.report'
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  <img src='/img/tools/try_bowtie.png' className='rounded-sm' />
+                </Link>
+                <p className='hidden lg:block text-slate-600 dark:text-slate-300'>
+                  Bowtie is a meta-validator for JSON Schema, coordinating and
+                  reporting results from other validators.
+                </p>
               </div>
             </div>
             <GroupBySelector
