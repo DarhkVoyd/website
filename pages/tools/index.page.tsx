@@ -149,7 +149,7 @@ export default function ToolingPage({
                 >
                   <img
                     src='/img/tools/adding_your_tool.png'
-                    className='rounded-sm'
+                    className='rounded-sm h-[76px]'
                   />
                 </Link>
                 <p className='hidden lg:block text-slate-600 dark:text-slate-300'>
@@ -165,7 +165,10 @@ export default function ToolingPage({
                   target='_blank'
                   rel='noreferrer'
                 >
-                  <img src='/img/tools/try_bowtie.png' className='rounded-sm' />
+                  <img
+                    src='/img/tools/try_bowtie.png'
+                    className='rounded-sm h-[76px]'
+                  />
                 </Link>
                 <p className='hidden lg:block text-slate-600 dark:text-slate-300'>
                   Bowtie is a meta-validator for JSON Schema, coordinating and
