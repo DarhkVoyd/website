@@ -1,15 +1,15 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
+
 import { Headline2 } from '~/components/Headlines';
-import {
-  TableColumnHeader,
-  TableSortableColumnHeader,
-  TableCell,
-} from './Table';
+
+import type { GroupedTools, Preferences } from '../../hooks/usePreferences';
+import type { JSONSchemaTool } from '../../JSONSchemaTool';
+import toTitleCase from '../../lib/toTitleCase';
+import Badge from '../ui/Badge';
+import TableColumnHeader from './TableColumnHeader';
+import TableSortableColumnHeader from './TableSortableColumnHeader';
+import TableCell from './TableCell';
 import ToolingDetailModal from './ToolingDetailModal';
-import Badge from './ui/Badge';
-import type { GroupedTools, Preferences } from '../hooks/usePreferences';
-import { JSONSchemaTool } from '../JSONSchemaTool';
-import toTitleCase from '../lib/toTitleCase';
 
 const ToolingTable = ({
   groupedTools,
@@ -66,7 +66,6 @@ const ToolingTable = ({
     </svg>
   );
 
-  // Define width configurations for different cases
   const columnWidths = {
     allPresent: {
       name: 'w-[25%]',
@@ -86,7 +85,6 @@ const ToolingTable = ({
     },
   };
 
-  // Determine which width configuration to use based on preferences
   const currentWidths =
     preferences.groupBy === 'toolingTypes'
       ? columnWidths.oneAbsent

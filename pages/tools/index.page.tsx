@@ -9,7 +9,7 @@ import { DRAFT_ORDER } from '~/lib/config';
 import { Headline1 } from '~/components/Headlines';
 
 import Sidebar from './components/Sidebar';
-import ToolingTable from './components/ToolingTable';
+import ToolingTable from './components/ToolingTable/ToolingTable';
 import GroupBySelector from './components/GroupBySelector';
 import usePreferences from './hooks/usePreferences';
 
