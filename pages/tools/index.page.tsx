@@ -140,7 +140,7 @@ export default function ToolingPage({
               kind.
             </p>
             <div className='flex flex-row items-center gap-2 w-full'>
-              <div className='flex items-center gap-2 w-1/2'>
+              <div className='flex items-center justify-center gap-2 w-1/2'>
                 <Link
                   className='flex-none max-w-full'
                   href='https://github.com/json-schema-org/website/issues/'
@@ -158,7 +158,7 @@ export default function ToolingPage({
                 </p>
               </div>
 
-              <div className='flex items-center gap-2 w-1/2'>
+              <div className='flex items-center justify-center gap-2 w-1/2'>
                 <Link
                   className='flex-none max-w-full'
                   href='https://bowtie.report'
