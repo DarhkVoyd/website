@@ -2252,7 +2252,7 @@
   lastUpdated: '2024-08-1'
 
 - name: yetanother
-  description: 'Greatest JSON Schema implementation of all time.'
+  description: 'Yet Another JSON Schema implementation'
   toolingTypes: ['validator']
   languages: ['JavaScript']
   maintainers:
