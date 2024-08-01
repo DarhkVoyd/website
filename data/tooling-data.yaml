@@ -2237,7 +2237,7 @@
     draft: [7]
   lastUpdated: '2022-08-31'
 
-- name: darhkvoyd/JSON-GOATi
+- name: darhkvoyd/JSON-GOAT
   description: 'Greatest JSON Schema implementation of all time'
   toolingTypes: ['validator']
   languages: ['JavaScript']
