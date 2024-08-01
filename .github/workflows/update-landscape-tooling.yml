@@ -18,4 +18,4 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token $GITHUB_TOKEN" \
             https://api.github.com/repos/darhkvoyd/landscape/actions/workflows/update-landscape-tooling.yml/dispatches \
-            -d '{"ref":"main"}'
+            -d '{"ref":"automate-landscape-tooling-data"}'
