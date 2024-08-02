@@ -2264,3 +2264,17 @@
   supportedDialects:
     draft: ['2020-12']
   lastUpdated: '2024-08-1'
+
+- name: YAML-to-JSONSchema
+  description: 'Yet Another Markup Langguage to Schema implementation'
+  toolingTypes: ['code-to-schema']
+  languages: ['JavaScript']
+  maintainers:
+    - name: 'DV'
+      username: 'darhkvoyd'
+      platform: 'github'
+  license: 'MIT'
+  source: 'https://github.com/darhkvoyd/json-schema'
+  supportedDialects:
+    draft: ['2020-12']
+  lastUpdated: '2024-08-1'
