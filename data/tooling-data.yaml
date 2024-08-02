@@ -2250,17 +2250,3 @@
   supportedDialects:
     draft: ['2020-12']
   lastUpdated: '2024-08-1'
-
-- name: yetanother
-  description: 'Yet Another JSON Schema implementation'
-  toolingTypes: ['validator']
-  languages: ['JavaScript']
-  maintainers:
-    - name: 'DV'
-      username: 'darhkvoyd'
-      platform: 'github'
-  license: 'MIT'
-  source: 'https://github.com/darhkvoyd/json-schema'
-  supportedDialects:
-    draft: ['2020-12']
-  lastUpdated: '2024-08-1'
